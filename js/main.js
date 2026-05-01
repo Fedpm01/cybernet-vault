@@ -24,13 +24,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadAllData() {
-  // Параллельно тянем всё
-  const [products_, activity_, lb, bal, ach, cart] = await Promise.all([
-    fetchProducts(), fetchActivity(), fetchLeaderboard(),
-    fetchBalance(), fetchAchievements(), fetchCart(),
+  const [profile, products_, activity_, lb, bal, ach, cart] = await Promise.all([
+    fetchMyProfile(),
+    fetchProducts(),
+    fetchActivity(),
+    fetchLeaderboard(),
+    fetchBalance(),
+    fetchAchievements(),
+    fetchCart(),
   ]);
 
-  // Записываем в глобальные переменные, которые ожидают рендеры
+  window.myProfile = profile;
   window.products = products_;
   window.activity = activity_;
   window.leaderboard = lb;
@@ -38,6 +42,7 @@ async function loadAllData() {
   state.user.balance = bal?.balance || 0;
   state.cart = cart;
 
+  renderProfileHeader();   // ← добавили
   renderAll();
   updateCartBadge();
 }

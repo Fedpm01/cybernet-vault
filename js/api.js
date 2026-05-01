@@ -65,10 +65,10 @@ async function fetchBalance() {
   const { data, error } = await supabaseClient
     .from('wallets')
     .select('balance, lifetime_earned, lifetime_spent')
-    .single();
+    .maybeSingle();   // ← было .single(), стало .maybeSingle()
 
-  if (error) { console.error(error); return null; }
-  return data;
+  if (error) { console.error('fetchBalance error:', error); return null; }
+  return data;  // вернёт null если кошелька нет, без ошибки 406
 }
 
 // Получить ачивки
@@ -157,4 +157,25 @@ function timeAgo(iso) {
   if (d < 7) return `${d} дн. назад`;
   if (d < 30) return `${Math.floor(d / 7)} нед. назад`;
   return new Date(iso).toLocaleDateString('ru-RU');
+}
+
+// Получить свой профиль
+async function fetchMyProfile() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (error) { console.error('fetchMyProfile error:', error); return null; }
+  return data;
+}
+
+// Хелпер: получить инициалы из имени
+function getInitials(name) {
+  if (!name) return '??';
+  return name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase();
 }

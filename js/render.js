@@ -2,6 +2,12 @@
 // CYBERNET VAULT // Renders for dashboard, leaderboard, profile
 // ============================================================
 
+// Хелперы для безопасного доступа к данным (window.* приоритетнее, fallback на data.js)
+function getProducts()     { return window.products     || (typeof products !== 'undefined' ? products : []); }
+function getActivity()     { return window.activity     || (typeof activity !== 'undefined' ? activity : []); }
+function getLeaderboard()  { return window.leaderboard  || (typeof leaderboard !== 'undefined' ? leaderboard : []); }
+function getAchievements() { return window.achievements || (typeof achievements !== 'undefined' ? achievements : []); }
+
 function renderAll() {
   renderBalances();
   renderActivity();
@@ -15,10 +21,36 @@ function renderAll() {
 
 function renderBalances() {
   const b = fmt(state.user.balance);
-  $('#balance-pill-num').textContent = b;
-  $('#balance-big').textContent = b;
-  const pb = $('#profile-balance');
-  if (pb) pb.textContent = b;
+  const pill = $('#balance-pill-num');
+  const big  = $('#balance-big');
+  const pb   = $('#profile-balance');
+  if (pill) pill.textContent = b;
+  if (big)  big.textContent  = b;
+  if (pb)   pb.textContent   = b;
+}
+
+function renderProfileHeader() {
+  if (!window.myProfile) return;
+  const p = window.myProfile;
+  const initials = getInitials(p.name);
+
+  // Аватар на топбаре
+  const avatarBtn = $('#avatar-btn');
+  if (avatarBtn) avatarBtn.textContent = initials;
+
+  // Имя на дашборде
+  const dashName = $('#dash-name');
+  if (dashName) dashName.textContent = p.name;
+
+  // Шапка профиля
+  const profAvatar = document.querySelector('.profile-avatar');
+  if (profAvatar) profAvatar.textContent = initials;
+
+  const profName = document.querySelector('.profile-name');
+  if (profName) profName.textContent = p.name;
+
+  const profRole = document.querySelector('.profile-role');
+  if (profRole) profRole.textContent = `${p.role || 'employee'} · ${p.team || '—'}`;
 }
 
 // ---------- Activity ----------
@@ -40,16 +72,32 @@ function activityRow(a) {
 
 function renderActivity() {
   const list = $('#activity-list');
-  if (list) list.innerHTML = activity.slice(0, 6).map(activityRow).join('');
   const full = $('#profile-activity');
-  if (full) full.innerHTML = activity.map(activityRow).join('');
+  const data = getActivity();
+
+  if (data.length === 0) {
+    const empty = `<li style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">Пока нет операций</li>`;
+    if (list) list.innerHTML = empty;
+    if (full) full.innerHTML = empty;
+    return;
+  }
+
+  if (list) list.innerHTML = data.slice(0, 6).map(activityRow).join('');
+  if (full) full.innerHTML = data.map(activityRow).join('');
 }
 
 // ---------- Mini leaderboard на dashboard ----------
 function renderMiniBoard() {
   const list = $('#mini-board-list');
   if (!list) return;
-  list.innerHTML = leaderboard.slice(0, 6).map((u, i) => {
+
+  const lb = getLeaderboard();
+  if (lb.length === 0) {
+    list.innerHTML = `<li style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">Пригласи команду 🎯</li>`;
+    return;
+  }
+
+  list.innerHTML = lb.slice(0, 6).map((u, i) => {
     const rank = i + 1;
     const cls  = `mini-rank--${rank}`;
     return `<li class="mini-row ${u.me ? 'mini-row--me' : ''}">
@@ -57,7 +105,7 @@ function renderMiniBoard() {
       <div class="lb-row__avatar" style="width:32px;height:32px;font-size:11px">${u.initials}</div>
       <div>
         <div class="mini-row__name">${u.name}${u.me ? ' <span class="mono dim" style="font-size:10px">// you</span>' : ''}</div>
-        <div class="mini-row__role">${u.role}</div>
+        <div class="mini-row__role">${u.role || '—'}</div>
       </div>
       <div class="mini-row__coins"><span class="coin">¢</span> ${fmt(u.coins)}</div>
     </li>`;
@@ -67,24 +115,38 @@ function renderMiniBoard() {
 // ---------- Leaderboard page ----------
 function renderLeaderboard() {
   const podium = $('#podium');
-  if (!podium) return;
-  const top3 = leaderboard.slice(0, 3);
-  // Order: 2nd · 1st · 3rd для пьедестала
-  const order = [top3[1], top3[0], top3[2]];
-  const ranks = [2, 1, 3];
+  const body   = $('#lb-table-body');
+  if (!podium || !body) return;
+
+  const lb = getLeaderboard();
+
+  if (lb.length === 0) {
+    podium.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:60px 24px;background:var(--bg-1);border:1px solid var(--line);border-radius:var(--radius-lg)">
+      <div style="font-family:var(--font-display);font-size:22px;margin-bottom:8px">Пока пусто</div>
+      <div style="font-size:14px">Пригласи команду — пьедестал зажжётся</div>
+    </div>`;
+    body.innerHTML = '';
+    return;
+  }
+
+  const top3 = lb.slice(0, 3);
+  // Order: 2nd · 1st · 3rd для пьедестала. Если в лидерборде меньше 3 — используем undefined-safe filter
+  const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+  const ranks = order.map(u => lb.indexOf(u) + 1);
+
   podium.innerHTML = order.map((u, i) => `
     <div class="podium podium--${ranks[i]}">
       <div class="podium__rank">#${ranks[i]}</div>
       <div class="podium__avatar">${u.initials}</div>
       <div class="podium__name">${u.name}</div>
-      <div class="podium__role">${u.role}</div>
+      <div class="podium__role">${u.role || '—'}</div>
       <div class="podium__coins"><span class="coin">¢</span> ${fmt(u.coins)}</div>
     </div>
   `).join('');
 
-  $('#lb-table-body').innerHTML = leaderboard.map((u, i) => {
+  body.innerHTML = lb.map((u, i) => {
     const rank = i + 1;
-    const dnum = parseInt(u.delta, 10);
+    const dnum = parseInt(u.delta, 10) || 0;
     const dcls = dnum > 0 ? '' : (dnum < 0 ? 'lb-row__delta--down' : 'lb-row__delta--same');
     const ico  = dnum > 0 ? 'arrow-up' : dnum < 0 ? 'arrow-down' : 'dash';
     return `<div class="lb-row ${u.me ? 'lb-row--me' : ''}">
@@ -93,7 +155,7 @@ function renderLeaderboard() {
         <div class="lb-row__avatar">${u.initials}</div>
         <div>
           <div class="lb-row__name">${u.name}${u.me ? ' <span class="mono dim" style="font-size:10px">· ты</span>' : ''}</div>
-          <div class="lb-row__role">${u.role}</div>
+          <div class="lb-row__role">${u.role || '—'}</div>
         </div>
       </div>
       <div class="lb-row__delta ${dcls}" data-hide-mobile>${icon(ico, { size: 11 })} ${u.delta === '0' ? 'без изменений' : Math.abs(dnum) + ' позиции'}</div>
@@ -106,9 +168,13 @@ function renderLeaderboard() {
 function renderAchievements() {
   const grid = $('#achievements');
   if (!grid) return;
-  const unlocked = achievements.filter(a => a.unlocked).length;
-  $('#achv-count').textContent = unlocked;
-  grid.innerHTML = achievements.map(a => `
+
+  const data = getAchievements();
+  const unlocked = data.filter(a => a.unlocked).length;
+  const counter = $('#achv-count');
+  if (counter) counter.textContent = unlocked;
+
+  grid.innerHTML = data.map(a => `
     <div class="achv ${a.unlocked ? 'achv--unlocked' : 'achv--locked'}">
       <div class="achv__icon">${icon(a.unlocked ? a.icon : 'lock', { size: 22 })}</div>
       <div class="achv__name">${a.name}</div>
@@ -120,6 +186,7 @@ function renderAchievements() {
 // ---------- Toast ----------
 function toast(msg, type = 'in') {
   const wrap = $('#toast-wrap');
+  if (!wrap) return;
   const el = document.createElement('div');
   el.className = `toast ${type === 'err' ? 'toast--err' : ''}`;
   el.innerHTML = `
