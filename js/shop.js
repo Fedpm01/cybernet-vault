@@ -2,11 +2,17 @@
 // CYBERNET VAULT // Shop logic
 // ============================================================
 
+// Хелпер для безопасного доступа (приоритет на window — реальные данные из БД)
+function getProductsList() {
+  return window.products || (typeof products !== 'undefined' ? products : []);
+}
+
 // ---------- Filters ----------
 function renderFilters() {
+  const list = getProductsList();
   const counts = {};
-  products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
-  counts.all = products.length;
+  list.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+  counts.all = list.length;
 
   $('#filter-categories').innerHTML = categoryDefs.map(c => `
     <li class="filters__item ${state.filters.category === c.id ? 'filters__item--active' : ''}" data-cat="${c.id}">
@@ -67,8 +73,8 @@ function applyFiltersAndSort(list) {
   }
   if (state.sort === 'price-asc')  f.sort((a, b) => a.price - b.price);
   if (state.sort === 'price-desc') f.sort((a, b) => b.price - a.price);
-  if (state.sort === 'new')        f.sort((a, b) => b.new - a.new);
-  if (state.sort === 'popular')    f.sort((a, b) => b.pop - a.pop);
+  if (state.sort === 'new')        f.sort((a, b) => (b.is_new || b.new || 0) - (a.is_new || a.new || 0));
+  if (state.sort === 'popular')    f.sort((a, b) => (b.popularity || b.pop || 0) - (a.popularity || a.pop || 0));
   return f;
 }
 
@@ -101,7 +107,7 @@ function productCard(p) {
 function renderShop() {
   const grid = $('#shop-grid');
   if (!grid) return;
-  const list = applyFiltersAndSort(products);
+  const list = applyFiltersAndSort(getProductsList());
   grid.innerHTML = list.length
     ? list.map(productCard).join('')
     : `<div style="grid-column:1/-1;padding:60px 24px;text-align:center;color:var(--text-muted)">
@@ -114,32 +120,40 @@ function renderShop() {
 function renderFeatured() {
   const grid = $('#featured-grid');
   if (!grid) return;
-  const featured = products.filter(p => p.badge).slice(0, 4);
+  const featured = getProductsList().filter(p => p.badge).slice(0, 4);
   grid.innerHTML = featured.map(productCard).join('');
 }
 
 // ---------- Card click handlers ----------
 function bindShopCards() {
-  document.body.addEventListener('click', e => {
+  document.body.addEventListener('click', async e => {
+    // Лайк — синхронизируем с БД
     const likeBtn = e.target.closest('[data-like]');
     if (likeBtn) {
       e.stopPropagation();
       const id = likeBtn.dataset.like;
+      // Локально сразу — для отклика
       if (state.liked.has(id)) state.liked.delete(id);
       else state.liked.add(id);
       renderShop();
       renderFeatured();
+      // В БД — в фоне
+      try { await toggleLike(id); }
+      catch (err) { console.error('like sync failed:', err); }
       return;
     }
+
+    // Quick-add (+ на карточке)
     const quickAdd = e.target.closest('[data-quickadd]');
     if (quickAdd) {
       e.stopPropagation();
-      const p = products.find(x => x.id === quickAdd.dataset.quickadd);
-      addToCart(p, 'M', 'Onyx');
-      toast(`${p.name} добавлен в корзину`, 'in');
-      pulseCartBtn();
+      const p = getProductsList().find(x => x.id === quickAdd.dataset.quickadd);
+      if (!p) return;
+      await addToCart(p, 'M', 'Onyx');
       return;
     }
+
+    // Открытие карточки
     const card = e.target.closest('[data-pid]');
     if (card && !e.target.closest('[data-like], [data-quickadd]')) {
       openProduct(card.dataset.pid);
@@ -153,7 +167,7 @@ let modalSize = 'M';
 let modalColor = 'Onyx';
 
 function openProduct(id) {
-  const p = products.find(x => x.id === id);
+  const p = getProductsList().find(x => x.id === id);
   if (!p) return;
   modalProduct = p;
   modalSize = 'M';
@@ -162,7 +176,7 @@ function openProduct(id) {
   $('#modal-cat').textContent = '// ' + (categoryDefs.find(c => c.id === p.category)?.label || p.category);
   $('#modal-title').textContent = p.name;
   $('#modal-price').textContent = fmt(p.price);
-  $('#modal-desc').textContent = p.desc;
+  $('#modal-desc').textContent = p.description || p.desc || '';
   const accent = p.accent || '#818CF8';
   $('#modal-img').innerHTML = (productRenderers[p.category] || svgTee)(p.color, accent);
 
@@ -211,17 +225,20 @@ function bindModal() {
     $('#color-current').textContent = modalColor;
   });
 
-  $('#modal-add').addEventListener('click', () => {
-    addToCart(modalProduct, modalSize, modalColor);
-    toast(`${modalProduct.name} · ${modalSize} · ${modalColor}`, 'in');
-    pulseCartBtn();
+  $('#modal-add').addEventListener('click', async () => {
+    if (!modalProduct) return;
+    await addToCart(modalProduct, modalSize, modalColor);
     closeProduct();
   });
 
-  $('#modal-like').addEventListener('click', () => {
-    if (state.liked.has(modalProduct.id)) state.liked.delete(modalProduct.id);
-    else state.liked.add(modalProduct.id);
+  $('#modal-like').addEventListener('click', async () => {
+    if (!modalProduct) return;
+    const id = modalProduct.id;
+    if (state.liked.has(id)) state.liked.delete(id);
+    else state.liked.add(id);
     renderShop();
     renderFeatured();
+    try { await toggleLike(id); }
+    catch (err) { console.error('like sync failed:', err); }
   });
 }

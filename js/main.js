@@ -33,6 +33,7 @@ async function loadAllData() {
     fetchAchievements(),
     fetchCart(),
   ]);
+  await fetchMyRank();   // ← добавили
 
   window.myProfile = profile;
   window.products = products_;
@@ -42,7 +43,8 @@ async function loadAllData() {
   state.user.balance = bal?.balance || 0;
   state.cart = cart;
 
-  renderProfileHeader();   // ← добавили
+  renderProfileHeader();
+  renderStats();   // ← добавили
   renderAll();
   updateCartBadge();
 }

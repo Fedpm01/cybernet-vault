@@ -65,10 +65,12 @@ async function fetchBalance() {
   const { data, error } = await supabaseClient
     .from('wallets')
     .select('balance, lifetime_earned, lifetime_spent')
-    .maybeSingle();   // ← было .single(), стало .maybeSingle()
+    .maybeSingle();
 
   if (error) { console.error('fetchBalance error:', error); return null; }
-  return data;  // вернёт null если кошелька нет, без ошибки 406
+  
+  window.myWallet = data;  // ← сохраняем целиком
+  return data;
 }
 
 // Получить ачивки
@@ -99,6 +101,20 @@ async function fetchCart() {
     color: i.color,
     qty: i.qty,
   }));
+}
+async function fetchMyRank() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+
+  const { data: all, error } = await supabaseClient
+    .from('wallets')
+    .select('user_id, lifetime_earned')
+    .order('lifetime_earned', { ascending: false });
+
+  if (error || !all) return;
+  
+  window.totalUsers = all.length;
+  window.myRank = all.findIndex(w => w.user_id === user.id) + 1;
 }
 
 // Добавить в корзину
