@@ -36,10 +36,10 @@ function bindAuth() {
     const team = form.querySelector('select').value;
 
     // Только корпоративные email
-    if (!email.endsWith('@cybernet.ai')) {
-      toast('Регистрация только для @cybernet.ai', 'err');
-      return;
-    }
+    //if (!email.endsWith('@cybernet.ai')) {
+      //toast('Регистрация только для @cybernet.ai', 'err');
+      //return;
+    //}
 
     const { data, error } = await supabaseClient.auth.signUp({
       email, password,
