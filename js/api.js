@@ -195,3 +195,10 @@ function getInitials(name) {
   if (!name) return '??';
   return name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase();
 }
+
+// Установить точное qty для строки в корзине
+async function setCartItemQty(productId, size, color, qty) {
+  await supabaseClient.from('cart_items')
+    .update({ qty })
+    .match({ product_id: productId, size, color });
+}
