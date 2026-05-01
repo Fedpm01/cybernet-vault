@@ -1,0 +1,57 @@
+/* ============================================================
+   CYBERNET VAULT // Design tokens
+   Цвета подобраны под navy логотип — главный акцент
+   приглушённый индиго, не лайм. Лайм оставил только для
+   "system online"-индикатора и редких success-моментов.
+   ============================================================ */
+:root {
+  /* Base / поверхности */
+  --bg-0: #0A0A12;       /* основной фон, чуть синее чем чёрный */
+  --bg-1: #11111B;       /* карточки */
+  --bg-2: #181822;       /* вложенные блоки, инпуты */
+  --bg-3: #22222E;       /* hover */
+  --line: #2A2A38;
+  --line-strong: #3D3D4D;
+
+  /* Текст */
+  --text: #F2F2F7;
+  --text-muted: #9A9AAE;
+  --text-dim: #6A6A7E;
+
+  /* Бренд — ядро палитры от логотипа */
+  --indigo-deep: #1E1B4B;     /* цвет логотипа в оригинале */
+  --indigo: #4F46E5;          /* основной CTA, заголовки-акценты */
+  --indigo-bright: #6366F1;   /* hover, glow */
+  --indigo-soft: #818CF8;     /* hero gradient stop, прогресс */
+  --indigo-glow: rgba(99, 102, 241, 0.18);
+
+  /* Вторичные */
+  --violet: #A78BFA;          /* tier badges, ачивки */
+  --cyan: #5EEAD4;            /* прогресс-бары, second accent */
+
+  /* Состояния */
+  --success: #34D399;
+  --warning: #FBBF24;
+  --danger: #FB7185;
+  --gold: #FACC15;
+  --coral: #FF4D6D;
+
+  /* Геометрия */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Тени */
+  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 8px 30px var(--indigo-glow);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+
+  /* Типографика */
+  --font-display: 'Unbounded', system-ui, sans-serif;
+  --font-body: 'Sora', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Анимации */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.6, 0, 0.2, 1);
+}

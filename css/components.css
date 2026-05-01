@@ -1,0 +1,227 @@
+/* ============================================
+   Лого + монета
+   ============================================ */
+.logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+.logo__sub {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-left: 4px;
+  border-left: 1px solid var(--line);
+  padding-left: 10px;
+  align-self: stretch;
+  display: flex; align-items: center;
+}
+
+.coin {
+  display: inline-grid; place-items: center;
+  width: 1em; height: 1em;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.78em;
+  background: linear-gradient(135deg, var(--indigo-bright), var(--indigo));
+  color: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  position: relative;
+}
+.coin::before {
+  content: ''; position: absolute; inset: -2px;
+  border-radius: 50%;
+  border: 1px dashed rgba(99, 102, 241, 0.45);
+  animation: spin 12s linear infinite;
+}
+
+.balance-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+}
+.balance-pill .coin { font-size: 18px; }
+
+/* ============================================
+   Иконки (используются через class="icon")
+   ============================================ */
+.icon {
+  display: inline-block;
+  width: 1em; height: 1em;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.icon--filled { fill: currentColor; stroke: none; }
+
+/* ============================================
+   Кнопки
+   ============================================ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  transition: all 0.2s var(--ease);
+  position: relative;
+  white-space: nowrap;
+}
+.btn--primary {
+  background: linear-gradient(180deg, var(--indigo-bright), var(--indigo));
+  color: white;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 8px 24px -8px var(--indigo-glow);
+}
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 14px 36px -8px rgba(99, 102, 241, 0.55);
+}
+.btn--primary:active { transform: translateY(0); }
+.btn--ghost {
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.btn--ghost:hover { background: var(--bg-3); border-color: var(--line-strong); }
+.btn--outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+}
+.btn--outline:hover { border-color: var(--indigo-bright); color: var(--indigo-soft); }
+.btn--icon {
+  width: 40px; height: 40px;
+  padding: 0;
+  border-radius: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  position: relative;
+  color: var(--text);
+}
+.btn--icon:hover { border-color: var(--line-strong); background: var(--bg-3); }
+.btn--lg { padding: 16px 28px; font-size: 15px; border-radius: 14px; }
+.btn--block { width: 100%; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* ============================================
+   Формы
+   ============================================ */
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.field__input,
+.field__select {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 15px;
+  transition: all 0.2s var(--ease);
+}
+.field__input:focus,
+.field__select:focus {
+  outline: none;
+  border-color: var(--indigo-bright);
+  background: var(--bg-2);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+}
+.field__input::placeholder { color: var(--text-dim); }
+
+.field--icon { position: relative; }
+.field--icon .field__input { padding-left: 46px; }
+.field--icon .field__icon {
+  position: absolute; left: 16px; top: calc(50% + 12px); transform: translateY(-50%);
+  color: var(--text-dim); width: 16px; height: 16px;
+}
+
+/* ============================================
+   Бейдж счётчика на корзине
+   ============================================ */
+.cart-btn { position: relative; }
+.cart-btn__badge {
+  position: absolute; top: -4px; right: -4px;
+  background: var(--coral);
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  border: 2px solid var(--bg-0);
+}
+.cart-btn__badge[hidden] { display: none !important; }
+
+/* ============================================
+   Аватар
+   ============================================ */
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo-soft), var(--cyan));
+  display: grid; place-items: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--bg-0);
+  cursor: pointer;
+  border: 2px solid var(--bg-0);
+  box-shadow: 0 0 0 1px var(--line);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Бейджи / теги
+   ============================================ */
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text-muted);
+}
+.pill strong { color: var(--indigo-soft); font-weight: 500; }
+.pill--accent {
+  background: rgba(99, 102, 241, 0.10);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--indigo-soft);
+}
+.pill--live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+  animation: pulse 2s ease-in-out infinite;
+}

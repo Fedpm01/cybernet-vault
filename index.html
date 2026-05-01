@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<meta name="theme-color" content="#0A0A12" />
+<title>CYBERNET // Merch Vault</title>
+<meta name="description" content="Внутренний магазин мерча Cybernet AI. Зарабатывай киберкоины — обменивай на мерч." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/auth.css" />
+<link rel="stylesheet" href="css/shell.css" />
+<link rel="stylesheet" href="css/pages.css" />
+<link rel="stylesheet" href="css/overlays.css" />
+</head>
+<body>
+
+<div class="app">
+
+<!-- ============================================
+     AUTH SCREEN
+     ============================================ -->
+<section class="shell shell--auth shell--active" id="shell-auth">
+  <div class="auth">
+    <div class="auth__hero">
+      <div style="display:flex;align-items:center;gap:14px;position:relative;z-index:1">
+        <img src="assets/logo-white.png" alt="Cybernet AI" style="height:28px;width:auto"/>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:0.18em;text-transform:uppercase;border-left:1px solid var(--line);padding-left:14px;">Merch Vault</span>
+      </div>
+
+      <div class="auth__hero-content">
+        <span class="auth__hero-tag">System online · v2.4</span>
+        <h1 class="auth__hero-title">Earn.<br><em>Flex.</em><br><span class="slash">//</span> Repeat.</h1>
+        <p class="auth__hero-desc">Внутренняя экосистема Cybernet AI. Закрывай задачи, получай киберкоины, обменивай на эксклюзивный мерч команды. Только для своих.</p>
+
+        <div class="auth__perks">
+          <div class="auth__perk">
+            <div class="auth__perk-num">// 01</div>
+            <div class="auth__perk-text">Зарабатывай за выполнение задач, помощь команде и code reviews</div>
+          </div>
+          <div class="auth__perk">
+            <div class="auth__perk-num">// 02</div>
+            <div class="auth__perk-text">Тратишь на капюшонки, тамблеры, кепки и лимитированные дропы</div>
+          </div>
+          <div class="auth__perk">
+            <div class="auth__perk-num">// 03</div>
+            <div class="auth__perk-text">Поднимайся в рейтинге команды и забирай эксклюзивные награды</div>
+          </div>
+          <div class="auth__perk">
+            <div class="auth__perk-num">// 04</div>
+            <div class="auth__perk-text">Прозрачная история начислений и трат — никаких сюрпризов</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth__hero-foot">
+        <span>Cybernet AI © 2026</span>
+        <span>Internal access only</span>
+      </div>
+    </div>
+
+    <div class="auth__form-wrap">
+      <div class="auth__form">
+        <div class="auth__tabs" role="tablist">
+          <button class="auth__tab auth__tab--active" data-tab="login" role="tab">Войти</button>
+          <button class="auth__tab" data-tab="signup" role="tab">Регистрация</button>
+        </div>
+
+        <!-- LOGIN -->
+        <div class="auth__pane" data-pane="login">
+          <div class="auth__form-head">
+            <div class="auth__form-eyebrow">// Auth · 0x01</div>
+            <h2 class="auth__form-title">С возвращением.</h2>
+            <p class="auth__form-sub">Войди в свой Cybernet ID, чтобы продолжить.</p>
+          </div>
+
+          <form id="form-login" novalidate>
+            <div class="field field--icon">
+              <label class="field__label" for="login-email">Корпоративный email</label>
+              <svg class="field__icon"><use href="#i-mail"/></svg>
+              <input class="field__input" id="login-email" type="email" autocomplete="email" placeholder="name@cybernet.ai" required />
+            </div>
+
+            <div class="field field--icon" style="margin-top:14px">
+              <label class="field__label" for="login-pw">Пароль</label>
+              <svg class="field__icon"><use href="#i-lock"/></svg>
+              <input class="field__input" id="login-pw" type="password" autocomplete="current-password" placeholder="••••••••" required />
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 24px;font-size:13px">
+              <label style="display:inline-flex;align-items:center;gap:8px;color:var(--text-muted);cursor:pointer">
+                <input type="checkbox" style="accent-color:var(--indigo)" /> Запомнить меня
+              </label>
+              <a href="#" style="color:var(--indigo-soft)">Забыли пароль?</a>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--lg btn--block">
+              Войти в систему
+              <svg class="icon" width="16" height="16"><use href="#i-arrow"/></svg>
+            </button>
+
+            <div style="margin:20px 0 16px;display:flex;align-items:center;gap:12px;color:var(--text-dim);font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em">
+              <span style="flex:1;height:1px;background:var(--line)"></span>
+              ИЛИ ЧЕРЕЗ SSO
+              <span style="flex:1;height:1px;background:var(--line)"></span>
+            </div>
+
+            <button type="button" class="btn btn--outline btn--block" onclick="quickLogin()">
+              <svg class="icon" width="16" height="16"><use href="#i-zap"/></svg>
+              Войти через Cybernet SSO
+            </button>
+
+            <div class="auth__demo">
+              <strong>// Demo:</strong> любой email/пароль или жми <strong>SSO</strong> — это прототип
+            </div>
+          </form>
+        </div>
+
+        <!-- SIGNUP -->
+        <div class="auth__pane" data-pane="signup" hidden>
+          <div class="auth__form-head">
+            <div class="auth__form-eyebrow">// Onboard · 0x02</div>
+            <h2 class="auth__form-title">Стань частью.</h2>
+            <p class="auth__form-sub">Регистрация только для сотрудников Cybernet AI.</p>
+          </div>
+
+          <form id="form-signup" novalidate>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="field">
+                <label class="field__label">Имя</label>
+                <input class="field__input" type="text" placeholder="Анвар" required />
+              </div>
+              <div class="field">
+                <label class="field__label">Фамилия</label>
+                <input class="field__input" type="text" placeholder="Каримов" required />
+              </div>
+            </div>
+
+            <div class="field field--icon" style="margin-top:14px">
+              <label class="field__label">Корпоративный email</label>
+              <svg class="field__icon"><use href="#i-mail"/></svg>
+              <input class="field__input" type="email" placeholder="name@cybernet.ai" required />
+            </div>
+
+            <div class="field field--icon" style="margin-top:14px">
+              <label class="field__label">Пароль</label>
+              <svg class="field__icon"><use href="#i-lock"/></svg>
+              <input class="field__input" type="password" placeholder="мин. 8 символов" required />
+            </div>
+
+            <div class="field" style="margin-top:14px">
+              <label class="field__label">Команда / отдел</label>
+              <select class="field__select">
+                <option>Engineering</option>
+                <option>AI Research</option>
+                <option>Product</option>
+                <option>Design</option>
+                <option>Operations</option>
+                <option>Sales & Marketing</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--lg btn--block" style="margin-top:24px">
+              Создать Cybernet ID
+              <svg class="icon" width="16" height="16"><use href="#i-arrow"/></svg>
+            </button>
+
+            <p class="auth__form-foot">
+              Регистрируясь, ты соглашаешься с внутренним кодексом Cybernet AI
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     APP SHELL (after login)
+     ============================================ -->
+<section class="shell shell--app" id="shell-app">
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a href="#" class="logo" data-route="dashboard">
+        <img src="assets/logo-white.png" alt="Cybernet AI" style="height:24px;width:auto"/>
+        <span class="logo__sub">Vault</span>
+      </a>
+
+      <nav class="topbar__nav" aria-label="Primary">
+        <a class="topbar__navlink topbar__navlink--active" data-route="dashboard">Дашборд</a>
+        <a class="topbar__navlink" data-route="shop">Магазин</a>
+        <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
+        <a class="topbar__navlink" data-route="profile">Профиль</a>
+      </nav>
+
+      <div class="topbar__right">
+        <span class="balance-pill">
+          <span class="coin">¢</span>
+          <span class="tnum" id="balance-pill-num">0</span>
+        </span>
+        <button class="btn--icon cart-btn" id="cart-open" aria-label="Корзина">
+          <svg class="icon" width="18" height="18"><use href="#i-bag"/></svg>
+          <span class="cart-btn__badge" id="cart-badge" hidden>0</span>
+        </button>
+        <div class="avatar" id="avatar-btn" data-route="profile">AK</div>
+        <button class="btn--icon menubtn" id="menu-toggle" aria-label="Меню">
+          <svg class="icon" width="18" height="18"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <a class="topbar__navlink topbar__navlink--active" data-route="dashboard">Дашборд</a>
+      <a class="topbar__navlink" data-route="shop">Магазин</a>
+      <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
+      <a class="topbar__navlink" data-route="profile">Профиль</a>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <main class="page page--active" data-page="dashboard">
+    <div class="container">
+      <div class="hero-card fade-up">
+        <div class="hero-card__grid">
+          <div>
+            <div class="hero-greet">// Welcome back, агент</div>
+            <h1 class="hero-name" id="dash-name">Анвар Каримов</h1>
+            <span class="hero-rank">
+              <svg class="icon" width="14" height="14"><use href="#i-bolt"/></svg>
+              Tier 03 · ARCHITECT
+            </span>
+          </div>
+          <div class="bigbalance">
+            <div class="bigbalance__label">Твой баланс</div>
+            <div class="bigbalance__num">
+              <span class="tnum" id="balance-big">2 480</span>
+              <span class="bigbalance__cc">CC</span>
+            </div>
+            <div class="bigbalance__hint">+ 320 CC за последние 7 дней</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats stagger">
+        <div class="stat-card">
+          <div class="stat-card__label">
+            <span class="stat-card__icon"><svg class="icon"><use href="#i-trend-up"/></svg></span>
+            Заработано всего
+          </div>
+          <div class="stat-card__value tnum">8 920</div>
+          <div class="stat-card__delta">
+            <svg class="icon"><use href="#i-arrow-up"/></svg>
+            +12% мес/мес
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">
+            <span class="stat-card__icon"><svg class="icon"><use href="#i-bag"/></svg></span>
+            Потрачено
+          </div>
+          <div class="stat-card__value tnum">6 440</div>
+          <div class="stat-card__delta stat-card__delta--down">
+            <svg class="icon"><use href="#i-arrow-down"/></svg>
+            -3% мес/мес
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">
+            <span class="stat-card__icon"><svg class="icon"><use href="#i-trophy"/></svg></span>
+            Место в рейтинге
+          </div>
+          <div class="stat-card__value">#7 <span style="font-size:14px;color:var(--text-muted);font-weight:400">из 142</span></div>
+          <div class="stat-card__delta">
+            <svg class="icon"><use href="#i-arrow-up"/></svg>
+            поднялся на 3
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__label">
+            <span class="stat-card__icon"><svg class="icon"><use href="#i-flame"/></svg></span>
+            Серия дней
+          </div>
+          <div class="stat-card__value tnum">14 <span style="font-size:14px;color:var(--text-muted);font-weight:400">дней</span></div>
+          <div class="stat-card__delta">
+            <svg class="icon"><use href="#i-flame"/></svg>
+            личный рекорд
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="section-title">Подобрано для тебя</h2>
+        <a class="section-link" data-route="shop">
+          Весь магазин
+          <svg class="icon" width="12" height="12"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+      <div class="product-grid stagger" id="featured-grid"></div>
+
+      <div class="dash-grid">
+        <div class="activity">
+          <div class="activity__head">
+            <h3>История операций</h3>
+            <a class="section-link" data-route="profile">
+              Все
+              <svg class="icon" width="12" height="12"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+          <ul class="activity__list" id="activity-list"></ul>
+        </div>
+
+        <div class="mini-board">
+          <div class="activity__head">
+            <h3>Топ команды</h3>
+            <a class="section-link" data-route="leaderboard">
+              Весь рейтинг
+              <svg class="icon" width="12" height="12"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+          <ul class="mini-board__list" id="mini-board-list"></ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SHOP -->
+  <main class="page" data-page="shop">
+    <div class="container">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">// Catalog · LIVE</div>
+          <h1 class="page-title">Cybernet Vault</h1>
+          <p class="page-sub" style="margin-top:12px">Эксклюзивный мерч Cybernet AI. Только за киберкоины. Дропы обновляются ежемесячно.</p>
+        </div>
+      </div>
+
+      <div class="shop-layout">
+        <aside class="filters">
+          <div class="filters__group">
+            <div class="filters__title">Категория</div>
+            <ul class="filters__list" id="filter-categories"></ul>
+          </div>
+          <div class="filters__group">
+            <div class="filters__title">Цена (CC)</div>
+            <ul class="filters__list" id="filter-price">
+              <li class="filters__item filters__item--active" data-price="all">Любая</li>
+              <li class="filters__item" data-price="0-500">До 500</li>
+              <li class="filters__item" data-price="500-1000">500 — 1 000</li>
+              <li class="filters__item" data-price="1000-2000">1 000 — 2 000</li>
+              <li class="filters__item" data-price="2000+">2 000+</li>
+            </ul>
+          </div>
+          <div class="filters__group">
+            <div class="filters__title">По размеру кошелька</div>
+            <ul class="filters__list">
+              <li class="filters__item" data-affordable="true" id="affordable-toggle">Только мне доступное</li>
+            </ul>
+          </div>
+        </aside>
+
+        <div>
+          <div class="shop-bar">
+            <div class="shop-count">Найдено <strong id="shop-count">0</strong> позиций</div>
+            <div class="sort">
+              <label>Сортировка</label>
+              <select id="sort-select">
+                <option value="popular">по популярности</option>
+                <option value="price-asc">сначала дешевле</option>
+                <option value="price-desc">сначала дороже</option>
+                <option value="new">сначала новые</option>
+              </select>
+            </div>
+          </div>
+          <div class="product-grid" id="shop-grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- LEADERBOARD -->
+  <main class="page" data-page="leaderboard">
+    <div class="container">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">// Top performers · Q2 2026</div>
+          <h1 class="page-title">Рейтинг команды</h1>
+          <p class="page-sub" style="margin-top:12px">Сводный лидерборд по заработанным CC. Обнуляется каждый квартал. Топ-3 получают эксклюзивный дроп.</p>
+        </div>
+      </div>
+
+      <div class="lb-podium" id="podium"></div>
+      <div class="lb-table">
+        <div class="lb-table__head">
+          <div>Ранг</div>
+          <div>Сотрудник</div>
+          <div data-hide-mobile>Изменение</div>
+          <div style="text-align:right">Заработано</div>
+        </div>
+        <div id="lb-table-body"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PROFILE -->
+  <main class="page" data-page="profile">
+    <div class="container">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">// Личный кабинет</div>
+          <h1 class="page-title">Профиль</h1>
+        </div>
+        <button class="btn btn--ghost" onclick="logout()">
+          <svg class="icon" width="16" height="16"><use href="#i-logout"/></svg>
+          Выйти
+        </button>
+      </div>
+
+      <div class="profile-header">
+        <div class="profile-avatar">AK</div>
+        <div>
+          <div class="profile-name">Анвар Каримов</div>
+          <div class="profile-role">Senior AI Engineer · Engineering</div>
+          <div class="profile-meta">
+            <span class="pill">Tier <strong>03 · ARCHITECT</strong></span>
+            <span class="pill">Cybernet с <strong>2024</strong></span>
+            <span class="pill">Серия <strong>14 дней</strong></span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="hero-greet" style="margin-bottom:6px">// Текущий баланс</div>
+          <div class="bigbalance__num" style="font-size:48px"><span class="tnum" id="profile-balance">2 480</span> <span class="bigbalance__cc">CC</span></div>
+        </div>
+      </div>
+
+      <div class="profile-cols">
+        <div>
+          <div class="section-head">
+            <h2 class="section-title">Достижения</h2>
+            <span class="pill"><strong id="achv-count">5</strong> / 9 открыто</span>
+          </div>
+          <div class="achievements" id="achievements"></div>
+
+          <div class="section-head" style="margin-top:36px">
+            <h2 class="section-title">Прогресс уровня</h2>
+          </div>
+          <div class="tier-progress">
+            <div class="tier-progress__head">
+              <span class="current">Tier 03 · Architect</span>
+              <span class="next">Tier 04 · Operator</span>
+            </div>
+            <div class="tier-progress__bar">
+              <div class="tier-progress__fill" style="width:62%"></div>
+            </div>
+            <div class="tier-progress__foot">
+              <span>8 920 / 14 500 CC заработано</span>
+              <span>62%</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-head">
+            <h2 class="section-title">Полная история</h2>
+          </div>
+          <div class="activity">
+            <ul class="activity__list" id="profile-activity"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="container">
+    <div class="foot-note">// Cybernet AI Internal · System v2.4 · For team eyes only</div>
+  </div>
+</section>
+
+<!-- CART DRAWER -->
+<aside class="drawer" id="cart-drawer" aria-hidden="true">
+  <div class="drawer__backdrop" data-drawer-close></div>
+  <div class="drawer__panel">
+    <div class="drawer__head">
+      <h3 class="drawer__title">Корзина</h3>
+      <button class="btn--icon" data-drawer-close aria-label="Закрыть">
+        <svg class="icon" width="18" height="18"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="drawer__list" id="cart-list"></div>
+    <div class="drawer__foot" id="cart-foot" hidden>
+      <div class="drawer__warn" id="cart-warn">Не хватает <strong id="cart-warn-amt">0</strong> CC. Заработай ещё или убери что-то из корзины.</div>
+      <div class="drawer__row">
+        <span style="color:var(--text-muted);font-size:13px">Позиций</span>
+        <span class="mono tnum" id="cart-count-text">0</span>
+      </div>
+      <div class="drawer__row drawer__row--total">
+        <span>Итого</span>
+        <span class="balance-pill"><span class="coin">¢</span><span class="tnum" id="cart-total">0</span></span>
+      </div>
+      <button class="btn btn--primary btn--lg btn--block" id="checkout-btn" style="margin-top:14px">
+        Обменять на CC
+        <svg class="icon" width="16" height="16"><use href="#i-arrow"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="product-modal" aria-hidden="true">
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel">
+    <button class="modal__close" data-modal-close aria-label="Закрыть">
+      <svg class="icon" width="16" height="16"><use href="#i-x"/></svg>
+    </button>
+    <div class="modal__img" id="modal-img"></div>
+    <div class="modal__body">
+      <div class="modal__cat" id="modal-cat">// Hoodie</div>
+      <h2 class="modal__title" id="modal-title">Cybernet Core Hoodie</h2>
+      <div class="modal__price"><span class="coin">¢</span><span class="tnum" id="modal-price">1 800</span> <small>CC</small></div>
+      <p class="modal__desc" id="modal-desc"></p>
+
+      <div class="opts">
+        <div class="opts__label">Размер · <span class="opts__current" id="size-current">M</span></div>
+        <div class="opts__chips" id="size-chips"></div>
+      </div>
+
+      <div class="opts">
+        <div class="opts__label">Цвет · <span class="opts__current" id="color-current">Onyx</span></div>
+        <div class="opts__chips" id="color-chips" style="gap:14px"></div>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--outline" id="modal-like">
+          <svg class="icon" width="16" height="16"><use href="#i-heart-line"/></svg>
+          В избранное
+        </button>
+        <button class="btn btn--primary" id="modal-add">
+          <svg class="icon" width="16" height="16"><use href="#i-cart"/></svg>
+          В корзину
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+</div><!-- /.app -->
+
+<!-- JS modules — порядок важен, потому что есть зависимости -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/product-art.js"></script>
+<!--<script src="js/data.js"></script> -->
+<script src="js/api.js"></script>
+<script src="js/state.js"></script>
+<script src="js/render.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/shop.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
