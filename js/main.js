@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadAllData() {
-  const [profile, products_, activity_, lb, bal, ach, cart] = await Promise.all([
+  const [profile, products_, activity_, lb, bal, ach, cart, likedSet] = await Promise.all([
     fetchMyProfile(),
     fetchProducts(),
     fetchActivity(),
