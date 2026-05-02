@@ -202,6 +202,14 @@ async function fetchMyProfile() {
   return data;
 }
 
+async function fetchMyLikes() {
+  const { data, error } = await supabaseClient
+    .from('likes')
+    .select('product_id');
+  if (error) { console.error(error); return new Set(); }
+  return new Set(data.map(d => d.product_id));
+}
+
 // Хелпер: получить инициалы из имени
 function getInitials(name) {
   if (!name) return '??';

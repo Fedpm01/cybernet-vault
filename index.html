@@ -361,6 +361,12 @@
               <li class="filters__item" data-affordable="true" id="affordable-toggle">Только мне доступное</li>
             </ul>
           </div>
+          <div class="filters__group">
+            <div class="filters__title">Избранное</div>
+            <ul class="filters__list">
+              <li class="filters__item" id="liked-toggle">Только лайкнутые</li>
+            </ul>
+          </div>
         </aside>
 
         <div>
@@ -425,11 +431,7 @@
         <div>
           <div class="profile-name">Анвар Каримов</div>
           <div class="profile-role">Senior AI Engineer · Engineering</div>
-          <div class="profile-meta">
-            <span class="pill">Tier <strong>03 · ARCHITECT</strong></span>
-            <span class="pill">Cybernet с <strong>2024</strong></span>
-            <span class="pill">Серия <strong>14 дней</strong></span>
-          </div>
+          <div class="profile-meta" id="profile-meta"></div>
         </div>
         <div style="text-align:right">
           <div class="hero-greet" style="margin-bottom:6px">// Текущий баланс</div>
@@ -445,10 +447,10 @@
           </div>
           <div class="achievements" id="achievements"></div>
 
-          <div class="section-head" style="margin-top:36px">
+          <div class="section-head" id="tier-progress-head" style="margin-top:36px;display:none">
             <h2 class="section-title">Прогресс уровня</h2>
           </div>
-          <div class="tier-progress">
+          <div class="tier-progress" id="tier-progress" style="display:none">
             <div class="tier-progress__head">
               <span class="current">Tier 03 · Architect</span>
               <span class="next">Tier 04 · Operator</span>

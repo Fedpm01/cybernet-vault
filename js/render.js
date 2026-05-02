@@ -42,7 +42,7 @@ function renderProfileHeader() {
   const dashName = $('#dash-name');
   if (dashName) dashName.textContent = p.name;
 
-  // Шапка профиля
+  // Профиль
   const profAvatar = document.querySelector('.profile-avatar');
   if (profAvatar) profAvatar.textContent = initials;
 
@@ -51,6 +51,20 @@ function renderProfileHeader() {
 
   const profRole = document.querySelector('.profile-role');
   if (profRole) profRole.textContent = `${p.role || 'employee'} · ${p.team || '—'}`;
+
+  // Профиль meta — заполняем из БД, не хардкод
+  const meta = $('#profile-meta');
+  if (meta) {
+    const joined = p.created_at ? new Date(p.created_at).getFullYear() : new Date().getFullYear();
+    meta.innerHTML = `
+      <span class="pill">Cybernet с <strong>${joined}</strong></span>
+      <span class="pill">Команда · <strong>${p.team || '—'}</strong></span>
+    `;
+  }
+
+  // Скрываем хедер дашборда "Tier 03 · ARCHITECT" — пока не считаем тиры
+  const heroRank = document.querySelector('.hero-rank');
+  if (heroRank) heroRank.style.display = 'none';
 }
 
 function renderStats() {

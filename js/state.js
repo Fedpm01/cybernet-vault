@@ -13,7 +13,7 @@ const state = {
   cart: [],         // [{ _key, id, size, color, qty }]
   liked: new Set(),
   route: 'dashboard',
-  filters: { category: 'all', price: 'all', affordable: false },
+  filters: { category: 'all', price: 'all', affordable: false, likedOnly: false },
   sort: 'popular',
 };
 

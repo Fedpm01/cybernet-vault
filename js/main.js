@@ -32,6 +32,7 @@ async function loadAllData() {
     fetchBalance(),
     fetchAchievements(),
     fetchCart(),
+    fetchMyLikes(),
   ]);
   await fetchMyRank();   // ← добавили
 
@@ -42,6 +43,7 @@ async function loadAllData() {
   window.achievements = ach;
   state.user.balance = bal?.balance || 0;
   state.cart = cart;
+  state.liked = likedSet;
 
   renderProfileHeader();
   renderStats();   // ← добавили

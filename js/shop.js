@@ -45,6 +45,12 @@ function bindShopFilters() {
       af.classList.toggle('filters__item--active', state.filters.affordable);
       renderShop();
     }
+    const liked = e.target.closest('#liked-toggle');
+    if (liked) {
+      state.filters.likedOnly = !state.filters.likedOnly;
+      liked.classList.toggle('filters__item--active', state.filters.likedOnly);
+      renderShop();
+    }
   });
 
   $('#sort-select')?.addEventListener('change', e => {
@@ -70,6 +76,9 @@ function applyFiltersAndSort(list) {
   }
   if (state.filters.affordable) {
     f = f.filter(p => p.price <= state.user.balance);
+  }
+  if (state.filters.likedOnly) {                  // ← ДОБАВИТЬ
+    f = f.filter(p => state.liked.has(p.id));
   }
   if (state.sort === 'price-asc')  f.sort((a, b) => a.price - b.price);
   if (state.sort === 'price-desc') f.sort((a, b) => b.price - a.price);
