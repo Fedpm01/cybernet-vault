@@ -119,43 +119,55 @@ async function fetchMyRank() {
 
 // Добавить в корзину
 async function addCartItem(productId, size, color) {
-  // Если уже есть — увеличиваем qty, иначе создаём
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data: existing } = await supabaseClient
     .from('cart_items')
     .select('id, qty')
-    .match({ product_id: productId, size, color })
+    .match({ user_id: user.id, product_id: productId, size, color })
     .maybeSingle();
 
   if (existing) {
-    await supabaseClient.from('cart_items')
+    const { error } = await supabaseClient.from('cart_items')
       .update({ qty: existing.qty + 1 })
       .eq('id', existing.id);
+    if (error) throw error;
   } else {
-    await supabaseClient.from('cart_items')
-      .insert({ product_id: productId, size, color, qty: 1 });
+    const { error } = await supabaseClient.from('cart_items')
+      .insert({ user_id: user.id, product_id: productId, size, color, qty: 1 });
+    if (error) throw error;
   }
 }
 
 // Удалить из корзины
 async function removeCartItem(productId, size, color) {
-  await supabaseClient.from('cart_items')
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const { error } = await supabaseClient.from('cart_items')
     .delete()
-    .match({ product_id: productId, size, color });
+    .match({ user_id: user.id, product_id: productId, size, color });
+  if (error) throw error;
 }
 
 // Лайки
 async function toggleLike(productId) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data: existing } = await supabaseClient
     .from('likes')
     .select('product_id')
-    .eq('product_id', productId)
+    .match({ user_id: user.id, product_id: productId })
     .maybeSingle();
 
   if (existing) {
-    await supabaseClient.from('likes').delete().eq('product_id', productId);
+    await supabaseClient.from('likes').delete()
+      .match({ user_id: user.id, product_id: productId });
     return false;
   } else {
-    await supabaseClient.from('likes').insert({ product_id: productId });
+    await supabaseClient.from('likes').insert({ user_id: user.id, product_id: productId });
     return true;
   }
 }
@@ -198,7 +210,11 @@ function getInitials(name) {
 
 // Установить точное qty для строки в корзине
 async function setCartItemQty(productId, size, color, qty) {
-  await supabaseClient.from('cart_items')
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const { error } = await supabaseClient.from('cart_items')
     .update({ qty })
-    .match({ product_id: productId, size, color });
+    .match({ user_id: user.id, product_id: productId, size, color });
+  if (error) throw error;
 }
