@@ -69,7 +69,15 @@ function showAuth() {
   $('#shell-auth').classList.add('shell--active');
 }
 
-function quickLogin() {
-  // Demo SSO — для прототипа можно оставить так
-  toast('SSO ещё не настроен — используй email', 'err');
+async function quickLogin() {
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin,
+    },
+  });
+  if (error) {
+    toast(error.message, 'err');
+    console.error('SSO error:', error);
+  }
 }
