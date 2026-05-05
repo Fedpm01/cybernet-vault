@@ -32,6 +32,11 @@ function navigate(route) {
     l.classList.toggle('topbar__navlink--active', l.dataset.route === route);
   });
   $('#mobile-menu')?.classList.remove('mobile-menu--open');
+
+  if (route === 'orders' && typeof renderOrders === 'function') {
+    renderOrders();
+  }
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 

@@ -158,10 +158,12 @@ async function checkout() {
   renderCart();
   renderBalances();
   renderActivity();
-  showSuccessOverlay(data.total, itemsCount);
+  showSuccessOverlay(data.total, itemsCount, data.order_id);
 }
 
-function showSuccessOverlay(total, count) {
+function showSuccessOverlay(total, count, orderId) {
+  const shortId = orderId ? '#' + orderId.replace(/-/g, '').slice(0, 8).toUpperCase() : '#—';
+
   const overlay = document.createElement('div');
   overlay.className = 'success-overlay';
   overlay.innerHTML = `
@@ -170,7 +172,13 @@ function showSuccessOverlay(total, count) {
         <div class="success-overlay__icon">${icon('check', { size: 36 })}</div>
         <div class="success-overlay__eyebrow">// ORDER CONFIRMED</div>
         <h2 class="success-overlay__title">Готово, агент.</h2>
-        <p class="success-overlay__desc">${count} ${count === 1 ? 'позиция отправлена' : count < 5 ? 'позиции отправлены' : 'позиций отправлено'} в обработку. Получишь пуш, когда мерч приедет в офис.</p>
+        <p class="success-overlay__desc">${count} ${count === 1 ? 'позиция отправлена' : count < 5 ? 'позиции отправлены' : 'позиций отправлено'} в обработку. Покажи ID Севаре в OPS.</p>
+
+        <div style="margin:20px 0; padding:18px; background:var(--bg-2); border:1px dashed rgba(99,102,241,0.3); border-radius:14px; text-align:center;">
+          <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px">Order ID</div>
+          <div style="font-family:var(--font-mono); font-weight:700; font-size:24px; letter-spacing:0.05em; user-select:all; cursor:text">${shortId}</div>
+        </div>
+
         <div class="success-overlay__stats">
           <div>
             <div class="success-overlay__stat-label">Списано</div>
@@ -182,16 +190,29 @@ function showSuccessOverlay(total, count) {
             <div class="success-overlay__stat-value success-overlay__stat-value--remain">${fmt(state.user.balance)} CC</div>
           </div>
         </div>
-        <button class="btn btn--primary btn--block" id="success-close">
-          Зашибись · продолжить
-          ${icon('arrow', { size: 16 })}
-        </button>
+
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <button class="btn btn--outline" id="success-receipt" style="flex:1" data-success-order="${orderId || ''}">
+            ${icon('eye', { size: 16 })}
+            Квитанция
+          </button>
+          <button class="btn btn--primary" id="success-close" style="flex:1.5">
+            Зашибись · продолжить
+            ${icon('arrow', { size: 16 })}
+          </button>
+        </div>
       </div>
     </div>
   `;
   document.body.appendChild(overlay);
+
   $('#success-close').onclick = () => {
     overlay.style.animation = 'fadeIn 0.25s var(--ease) reverse';
     setTimeout(() => overlay.remove(), 240);
+  };
+
+  $('#success-receipt').onclick = () => {
+    overlay.remove();
+    if (orderId) openReceipt(orderId);
   };
 }

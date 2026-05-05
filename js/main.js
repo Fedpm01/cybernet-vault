@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindModal();
   bindShopFilters();
   bindShopCards();
+  bindOrders();
 
   // Если уже залогинен — сразу грузим данные и показываем app
   const { data: { user } } = await supabaseClient.auth.getUser();

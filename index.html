@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="css/shell.css" />
 <link rel="stylesheet" href="css/pages.css" />
 <link rel="stylesheet" href="css/overlays.css" />
+<link rel="stylesheet" href="css/orders.css" />
 </head>
 <body>
 
@@ -195,6 +196,7 @@
       <nav class="topbar__nav" aria-label="Primary">
         <a class="topbar__navlink topbar__navlink--active" data-route="dashboard">Дашборд</a>
         <a class="topbar__navlink" data-route="shop">Магазин</a>
+        <a class="topbar__navlink" data-route="orders">Заказы</a>
         <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
         <a class="topbar__navlink" data-route="profile">Профиль</a>
       </nav>
@@ -217,6 +219,7 @@
     <div class="mobile-menu" id="mobile-menu">
       <a class="topbar__navlink topbar__navlink--active" data-route="dashboard">Дашборд</a>
       <a class="topbar__navlink" data-route="shop">Магазин</a>
+      <a class="topbar__navlink" data-route="orders">Заказы</a>
       <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
       <a class="topbar__navlink" data-route="profile">Профиль</a>
     </div>
@@ -406,6 +409,26 @@
     </div>
   </main>
 
+  <!-- ORDERS -->
+  <main class="page" data-page="orders">
+    <div class="container">
+      <div class="page-head">
+        <div>
+          <div class="page-eyebrow">// История заказов</div>
+          <h1 class="page-title">Мои заказы</h1>
+          <p class="page-sub" style="margin-top:12px">Все твои покупки. Жми на заказ чтобы открыть квитанцию.</p>
+        </div>
+      </div>
+
+      <div class="orders-list" id="orders-list">
+        <div style="padding:60px 24px;text-align:center;color:var(--text-muted)">
+          <div style="font-family:var(--font-display);font-size:22px;margin-bottom:8px">Пока пусто</div>
+          <div style="font-size:14px">Твои покупки появятся здесь</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <!-- PROFILE -->
   <main class="page" data-page="profile">
     <div class="container">
@@ -549,7 +572,47 @@
 
 <!-- TOAST CONTAINER -->
 <div class="toast-wrap" id="toast-wrap"></div>
+<!-- ORDER RECEIPT MODAL -->
+<div class="receipt" id="receipt-modal" aria-hidden="true">
+  <div class="receipt__backdrop" data-receipt-close></div>
+  <div class="receipt__panel">
+    <div class="receipt__header">
+      <button class="receipt__close" data-receipt-close aria-label="Закрыть">
+        <svg class="icon" width="14" height="14"><use href="#i-x"/></svg>
+      </button>
+      <div class="receipt__eyebrow">// ORDER RECEIPT</div>
+      <div class="receipt__id" id="receipt-id">#XXXXXXXX</div>
+      <div class="receipt__status" id="receipt-status"></div>
+    </div>
 
+    <div class="receipt__body">
+      <div class="receipt__section">
+        <div class="receipt__section-title">Состав заказа</div>
+        <div class="receipt__items" id="receipt-items"></div>
+      </div>
+
+      <div class="receipt__meta">
+        <div class="receipt__meta-cell">
+          <div class="receipt__meta-label">Дата</div>
+          <div class="receipt__meta-value" id="receipt-date">—</div>
+        </div>
+        <div class="receipt__meta-cell">
+          <div class="receipt__meta-label">Время</div>
+          <div class="receipt__meta-value" id="receipt-time">—</div>
+        </div>
+      </div>
+
+      <div class="receipt__total">
+        <span>Итого списано</span>
+        <span class="receipt__total-amount" id="receipt-total">−0 CC</span>
+      </div>
+
+      <div class="receipt__instruction" id="receipt-instruction">
+        Покажи этот ID <strong id="receipt-show-id">#XXXXXXXX</strong> Нигине в офисе, чтобы забрать мерч из офиса.
+      </div>
+    </div>
+  </div>
+</div>
 </div><!-- /.app -->
 
 <!-- JS modules — порядок важен, потому что есть зависимости -->
@@ -564,6 +627,7 @@
 <script src="js/auth.js"></script>
 <script src="js/shop.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/orders.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
