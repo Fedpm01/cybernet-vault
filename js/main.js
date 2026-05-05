@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadAllData() {
-  const [profile, products_, activity_, lb, bal, ach, cart] = await Promise.all([
+  const [profile, products_, activity_, lb, bal, ach, cart, likedSet] = await Promise.all([
     fetchMyProfile(),
     fetchProducts(),
     fetchActivity(),
@@ -33,7 +33,9 @@ async function loadAllData() {
     fetchBalance(),
     fetchAchievements(),
     fetchCart(),
+    fetchMyLikes(),
   ]);
+  await fetchMyRank();   // ← добавили
 
   window.myProfile = profile;
   window.products = products_;
@@ -42,8 +44,10 @@ async function loadAllData() {
   window.achievements = ach;
   state.user.balance = bal?.balance || 0;
   state.cart = cart;
+  state.liked = likedSet;
 
-  renderProfileHeader();   // ← добавили
+  renderProfileHeader();
+  renderStats();   // ← добавили
   renderAll();
   updateCartBadge();
 }

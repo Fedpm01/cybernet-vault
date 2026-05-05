@@ -65,10 +65,12 @@ async function fetchBalance() {
   const { data, error } = await supabaseClient
     .from('wallets')
     .select('balance, lifetime_earned, lifetime_spent')
-    .maybeSingle();   // ← было .single(), стало .maybeSingle()
+    .maybeSingle();
 
   if (error) { console.error('fetchBalance error:', error); return null; }
-  return data;  // вернёт null если кошелька нет, без ошибки 406
+  
+  window.myWallet = data;  // ← сохраняем целиком
+  return data;
 }
 
 // Получить ачивки
@@ -100,46 +102,72 @@ async function fetchCart() {
     qty: i.qty,
   }));
 }
+async function fetchMyRank() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+
+  const { data: all, error } = await supabaseClient
+    .from('wallets')
+    .select('user_id, lifetime_earned')
+    .order('lifetime_earned', { ascending: false });
+
+  if (error || !all) return;
+  
+  window.totalUsers = all.length;
+  window.myRank = all.findIndex(w => w.user_id === user.id) + 1;
+}
 
 // Добавить в корзину
 async function addCartItem(productId, size, color) {
-  // Если уже есть — увеличиваем qty, иначе создаём
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data: existing } = await supabaseClient
     .from('cart_items')
     .select('id, qty')
-    .match({ product_id: productId, size, color })
+    .match({ user_id: user.id, product_id: productId, size, color })
     .maybeSingle();
 
   if (existing) {
-    await supabaseClient.from('cart_items')
+    const { error } = await supabaseClient.from('cart_items')
       .update({ qty: existing.qty + 1 })
       .eq('id', existing.id);
+    if (error) throw error;
   } else {
-    await supabaseClient.from('cart_items')
-      .insert({ product_id: productId, size, color, qty: 1 });
+    const { error } = await supabaseClient.from('cart_items')
+      .insert({ user_id: user.id, product_id: productId, size, color, qty: 1 });
+    if (error) throw error;
   }
 }
 
 // Удалить из корзины
 async function removeCartItem(productId, size, color) {
-  await supabaseClient.from('cart_items')
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const { error } = await supabaseClient.from('cart_items')
     .delete()
-    .match({ product_id: productId, size, color });
+    .match({ user_id: user.id, product_id: productId, size, color });
+  if (error) throw error;
 }
 
 // Лайки
 async function toggleLike(productId) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data: existing } = await supabaseClient
     .from('likes')
     .select('product_id')
-    .eq('product_id', productId)
+    .match({ user_id: user.id, product_id: productId })
     .maybeSingle();
 
   if (existing) {
-    await supabaseClient.from('likes').delete().eq('product_id', productId);
+    await supabaseClient.from('likes').delete()
+      .match({ user_id: user.id, product_id: productId });
     return false;
   } else {
-    await supabaseClient.from('likes').insert({ product_id: productId });
+    await supabaseClient.from('likes').insert({ user_id: user.id, product_id: productId });
     return true;
   }
 }
@@ -174,8 +202,27 @@ async function fetchMyProfile() {
   return data;
 }
 
+async function fetchMyLikes() {
+  const { data, error } = await supabaseClient
+    .from('likes')
+    .select('product_id');
+  if (error) { console.error(error); return new Set(); }
+  return new Set(data.map(d => d.product_id));
+}
+
 // Хелпер: получить инициалы из имени
 function getInitials(name) {
   if (!name) return '??';
   return name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase();
+}
+
+// Установить точное qty для строки в корзине
+async function setCartItemQty(productId, size, color, qty) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const { error } = await supabaseClient.from('cart_items')
+    .update({ qty })
+    .match({ user_id: user.id, product_id: productId, size, color });
+  if (error) throw error;
 }

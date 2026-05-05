@@ -451,7 +451,7 @@
   letter-spacing: 0.1em;
 }
 .sort select {
-  background: transparent;
+  background: var(--bg-1);
   border: none;
   color: var(--text);
   font-weight: 500;

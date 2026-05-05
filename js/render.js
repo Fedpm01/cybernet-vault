@@ -42,7 +42,7 @@ function renderProfileHeader() {
   const dashName = $('#dash-name');
   if (dashName) dashName.textContent = p.name;
 
-  // Шапка профиля
+  // Профиль
   const profAvatar = document.querySelector('.profile-avatar');
   if (profAvatar) profAvatar.textContent = initials;
 
@@ -51,6 +51,41 @@ function renderProfileHeader() {
 
   const profRole = document.querySelector('.profile-role');
   if (profRole) profRole.textContent = `${p.role || 'employee'} · ${p.team || '—'}`;
+
+  // Профиль meta — заполняем из БД, не хардкод
+  const meta = $('#profile-meta');
+  if (meta) {
+    const joined = p.created_at ? new Date(p.created_at).getFullYear() : new Date().getFullYear();
+    meta.innerHTML = `
+      <span class="pill">Cybernet с <strong>${joined}</strong></span>
+      <span class="pill">Команда · <strong>${p.team || '—'}</strong></span>
+    `;
+  }
+
+  // Скрываем хедер дашборда "Tier 03 · ARCHITECT" — пока не считаем тиры
+  const heroRank = document.querySelector('.hero-rank');
+  if (heroRank) heroRank.style.display = 'none';
+}
+
+function renderStats() {
+  const earned = window.myWallet?.lifetime_earned || 0;
+  const spent  = window.myWallet?.lifetime_spent  || 0;
+  const rank   = window.myRank   || '—';
+  const total  = window.totalUsers || 1;
+  const streak = window.myStreak || 0;
+
+  const stats = document.querySelectorAll('.stat-card__value');
+  if (stats[0]) stats[0].textContent = fmt(earned);
+  if (stats[1]) stats[1].textContent = fmt(spent);
+  if (stats[2]) stats[2].innerHTML = `#${rank} <span style="font-size:14px;color:var(--text-muted);font-weight:400">из ${total}</span>`;
+  if (stats[3]) stats[3].innerHTML = `${streak} <span style="font-size:14px;color:var(--text-muted);font-weight:400">дней</span>`;
+
+  // Уберём ложные дельты пока
+  document.querySelectorAll('.stat-card__delta').forEach(d => d.style.display = 'none');
+  
+  // Уберём ложный hint про "+320 CC за 7 дней"
+  const hint = document.querySelector('.bigbalance__hint');
+  if (hint) hint.style.display = 'none';
 }
 
 // ---------- Activity ----------
