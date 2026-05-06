@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="css/pages.css" />
 <link rel="stylesheet" href="css/overlays.css" />
 <link rel="stylesheet" href="css/orders.css" />
+<link rel="stylesheet" href="css/admin.css" />
 </head>
 <body>
 
@@ -203,6 +204,7 @@
         <a class="topbar__navlink" data-route="shop">Магазин</a>
         <a class="topbar__navlink" data-route="orders">Заказы</a>
         <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
+        <a class="topbar__navlink" data-route="admin" id="nav-admin" style="display:none">Админ</a>
         <a class="topbar__navlink" data-route="profile">Профиль</a>
       </nav>
 
@@ -226,6 +228,7 @@
       <a class="topbar__navlink" data-route="shop">Магазин</a>
       <a class="topbar__navlink" data-route="orders">Заказы</a>
       <a class="topbar__navlink" data-route="leaderboard">Рейтинг</a>
+      <a class="topbar__navlink" data-route="admin" id="nav-admin-mobile" style="display:none">Админ</a>
       <a class="topbar__navlink" data-route="profile">Профиль</a>
     </div>
   </header>
@@ -505,6 +508,131 @@
     </div>
   </main>
 
+    <!-- ADMIN -->
+  <main class="page" data-page="admin">
+    <div class="container">
+      <div class="page-head">
+        <div>
+          <div class="admin-eyebrow">
+            <span>// Control panel</span>
+            <span class="admin-eyebrow__badge">ADMIN</span>
+          </div>
+          <h1 class="page-title">Управление</h1>
+          <p class="page-sub" style="margin-top:12px">Начисление CC, обработка заказов, управление каталогом и аудит транзакций.</p>
+        </div>
+      </div>
+
+      <div class="admin-shell">
+        <!-- Sidebar tabs -->
+        <aside class="admin-tabs">
+          <div class="admin-tab admin-tab--active" data-admin-tab="overview">
+            <svg class="icon"><use href="#i-zap"/></svg>
+            Обзор
+          </div>
+          <div class="admin-tab" data-admin-tab="users">
+            <svg class="icon"><use href="#i-user"/></svg>
+            Юзеры
+            <span class="admin-tab__count" id="admin-users-count">0</span>
+          </div>
+          <div class="admin-tab" data-admin-tab="orders">
+            <svg class="icon"><use href="#i-package"/></svg>
+            Заказы
+            <span class="admin-tab__count" id="admin-orders-count">0</span>
+          </div>
+          <div class="admin-tab" data-admin-tab="catalog">
+            <svg class="icon"><use href="#i-bag"/></svg>
+            Каталог
+            <span class="admin-tab__count" id="admin-catalog-count">0</span>
+          </div>
+          <div class="admin-tab" data-admin-tab="tx">
+            <svg class="icon"><use href="#i-trend-up"/></svg>
+            Транзакции
+          </div>
+        </aside>
+
+        <!-- Content panes -->
+        <div>
+          <!-- OVERVIEW -->
+          <div class="admin-pane admin-pane--active" data-admin-pane="overview">
+            <div class="kpi-grid" id="admin-kpi"></div>
+            <div class="section-head">
+              <h2 class="section-title">Последние pending заказы</h2>
+            </div>
+            <div id="admin-recent-orders"></div>
+          </div>
+
+          <!-- USERS -->
+          <div class="admin-pane" data-admin-pane="users">
+            <div class="admin-table admin-table--users">
+              <div class="admin-table__head">
+                <div>Сотрудник</div>
+                <div>Команда</div>
+                <div>Баланс</div>
+                <div>Заказов</div>
+                <div>Действия</div>
+              </div>
+              <div id="admin-users-list"></div>
+            </div>
+          </div>
+
+          <!-- ORDERS -->
+          <div class="admin-pane" data-admin-pane="orders">
+            <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="admin-btn-sm admin-btn-sm--primary" data-order-filter="pending">Pending</button>
+              <button class="admin-btn-sm" data-order-filter="fulfilled">Выданные</button>
+              <button class="admin-btn-sm" data-order-filter="cancelled">Отменённые</button>
+              <button class="admin-btn-sm" data-order-filter="all">Все</button>
+            </div>
+            <div class="admin-table admin-table--orders">
+              <div class="admin-table__head">
+                <div>Order ID</div>
+                <div>Юзер</div>
+                <div>Сумма</div>
+                <div>Статус</div>
+                <div>Действия</div>
+              </div>
+              <div id="admin-orders-list"></div>
+            </div>
+          </div>
+
+          <!-- CATALOG -->
+          <div class="admin-pane" data-admin-pane="catalog">
+            <div style="margin-bottom:16px;display:flex;justify-content:flex-end">
+              <button class="btn btn--primary" id="admin-add-product">
+                <svg class="icon" width="16" height="16"><use href="#i-plus"/></svg>
+                Добавить товар
+              </button>
+            </div>
+            <div class="admin-table admin-table--catalog">
+              <div class="admin-table__head">
+                <div></div>
+                <div>Товар</div>
+                <div>Категория</div>
+                <div>Цена</div>
+                <div>Действия</div>
+              </div>
+              <div id="admin-catalog-list"></div>
+            </div>
+          </div>
+
+          <!-- TRANSACTIONS -->
+          <div class="admin-pane" data-admin-pane="tx">
+            <div class="admin-table admin-table--tx">
+              <div class="admin-table__head">
+                <div>Юзер</div>
+                <div>Описание</div>
+                <div>Источник</div>
+                <div>Сумма</div>
+                <div>Дата</div>
+              </div>
+              <div id="admin-tx-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <div class="container">
     <div class="foot-note">// Cybernet AI Internal · System v2.4 · For team eyes only</div>
   </div>
@@ -577,6 +705,119 @@
   </div>
 </div>
 
+<!-- ADMIN GRANT CC MODAL -->
+<div class="admin-modal" id="grant-modal" aria-hidden="true">
+  <div class="admin-modal__backdrop" data-grant-close></div>
+  <div class="admin-modal__panel">
+    <div class="admin-modal__head">
+      <h3 class="admin-modal__title">Начислить CC</h3>
+      <button class="btn--icon" data-grant-close aria-label="Закрыть">
+        <svg class="icon" width="16" height="16"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="admin-modal__body">
+      <div style="margin-bottom:14px">
+        <div class="field__label" style="margin-bottom:8px">Получатель</div>
+        <div id="grant-user-info" style="padding:14px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;gap:12px"></div>
+      </div>
+
+      <div class="field" style="margin-bottom:14px">
+        <label class="field__label">Сумма (CC)</label>
+        <input class="field__input" id="grant-amount" type="number" min="1" placeholder="100" />
+      </div>
+
+      <div class="field" style="margin-bottom:14px">
+        <label class="field__label">За что (видно юзеру)</label>
+        <input class="field__input" id="grant-description" type="text" placeholder="Hackathon win — 1st place" />
+      </div>
+
+      <div class="field">
+        <label class="field__label">Тип источника</label>
+        <select class="field__select" id="grant-source">
+          <option value="manual">Manual (ручное)</option>
+          <option value="hackathon">Hackathon</option>
+          <option value="code_review">Code review</option>
+          <option value="bug_bounty">Bug bounty</option>
+          <option value="tech_talk">Tech talk</option>
+          <option value="mentorship">Mentorship</option>
+          <option value="bonus">Bonus</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-modal__footer">
+      <button class="btn btn--ghost" data-grant-close>Отмена</button>
+      <button class="btn btn--primary" id="grant-submit">Начислить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PRODUCT MODAL -->
+<div class="admin-modal" id="product-edit-modal" aria-hidden="true">
+  <div class="admin-modal__backdrop" data-pedit-close></div>
+  <div class="admin-modal__panel">
+    <div class="admin-modal__head">
+      <h3 class="admin-modal__title" id="pedit-title">Новый товар</h3>
+      <button class="btn--icon" data-pedit-close aria-label="Закрыть">
+        <svg class="icon" width="16" height="16"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="admin-modal__body">
+      <div class="field" style="margin-bottom:14px">
+        <label class="field__label">ID (slug, например core-hoodie)</label>
+        <input class="field__input" id="pedit-id" type="text" placeholder="my-new-hoodie" />
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label class="field__label">Название</label>
+        <input class="field__input" id="pedit-name" type="text" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="field">
+          <label class="field__label">Категория</label>
+          <select class="field__select" id="pedit-category">
+            <option value="hoodie">Худи</option>
+            <option value="tshirt">Футболка</option>
+            <option value="sweater">Свитер</option>
+            <option value="cap">Кепка</option>
+            <option value="tumbler">Тамблер</option>
+            <option value="tote">Сумка</option>
+            <option value="sticker">Стикер</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label">Цена (CC)</label>
+          <input class="field__input" id="pedit-price" type="number" min="1" placeholder="500" />
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label class="field__label">Описание</label>
+        <input class="field__input" id="pedit-desc" type="text" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="field">
+          <label class="field__label">Цвет (hex)</label>
+          <input class="field__input" id="pedit-color" type="text" placeholder="#1A1A22" />
+        </div>
+        <div class="field">
+          <label class="field__label">Акцент (hex)</label>
+          <input class="field__input" id="pedit-accent" type="text" placeholder="#818CF8" />
+        </div>
+        <div class="field">
+          <label class="field__label">Бейдж</label>
+          <select class="field__select" id="pedit-badge">
+            <option value="">— нет —</option>
+            <option value="HOT">HOT</option>
+            <option value="NEW">NEW</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal__footer">
+      <button class="btn btn--ghost" data-pedit-close>Отмена</button>
+      <button class="btn btn--primary" id="pedit-submit">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST CONTAINER -->
 <div class="toast-wrap" id="toast-wrap"></div>
 <!-- ORDER RECEIPT MODAL -->
@@ -635,6 +876,7 @@
 <script src="js/shop.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/orders.js"></script>
+<script src="js/admin.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

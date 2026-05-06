@@ -13,11 +13,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindShopFilters();
   bindShopCards();
   bindOrders();
+  bindAdmin(); 
 
   // Если уже залогинен — сразу грузим данные и показываем app
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (user) {
     await loadAllData();
+    await initAdmin();
     showApp();
   } else {
     showAuth();

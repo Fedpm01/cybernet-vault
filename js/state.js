@@ -36,6 +36,9 @@ function navigate(route) {
   if (route === 'orders' && typeof renderOrders === 'function') {
     renderOrders();
   }
+  if (route === 'admin' && typeof renderAdminOverview === 'function') {
+    renderAdminOverview();
+  }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
