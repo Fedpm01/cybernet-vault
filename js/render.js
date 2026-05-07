@@ -43,8 +43,8 @@ function renderProfileHeader() {
   if (dashName) dashName.textContent = p.name;
 
   // Профиль
-  const profAvatar = document.querySelector('.profile-avatar');
-  if (profAvatar) profAvatar.textContent = initials;
+  const profInitials = document.getElementById('profile-avatar-initials');
+  if (profInitials) profInitials.textContent = initials;
 
   const profName = document.querySelector('.profile-name');
   if (profName) profName.textContent = p.name;
