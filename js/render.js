@@ -68,8 +68,17 @@ function renderProfileHeader() {
   if (typeof applyAvatar === 'function') {
     applyAvatar(p.avatar_url);
   }
+  const greet = $('#dash-greet');
+  if (greet && p.name) {
+    const firstName = p.name.split(' ')[0];
+    greet.textContent = `// Welcome back, ${firstName}`;
+  }
 
+  if (typeof applyAvatar === 'function') {
+    applyAvatar(p.avatar_url);
+  }
 }
+
 
 function renderStats() {
   const earned = window.myWallet?.lifetime_earned || 0;

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (user) {
     await loadAllData();
     await initAdmin();
+    subscribeToBalanceUpdates();
     showApp();
   } else {
     showAuth();

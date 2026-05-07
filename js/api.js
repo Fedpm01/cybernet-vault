@@ -226,3 +226,41 @@ async function setCartItemQty(productId, size, color, qty) {
     .match({ user_id: user.id, product_id: productId, size, color });
   if (error) throw error;
 }
+
+// Realtime — баланс обновляется когда админ начислил CC
+function subscribeToBalanceUpdates() {
+  let userId = null;
+  supabaseClient.auth.getUser().then(({ data }) => {
+    userId = data.user?.id;
+    if (!userId) return;
+
+    supabaseClient
+      .channel('wallet-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'wallets',
+          filter: `user_id=eq.${userId}`,
+        },
+        async (payload) => {
+          const newBalance = payload.new.balance;
+          const oldBalance = payload.old.balance;
+          state.user.balance = newBalance;
+          window.myWallet = payload.new;
+          renderBalances();
+
+          // Если баланс вырос — показать toast
+          if (newBalance > oldBalance) {
+            const diff = newBalance - oldBalance;
+            toast(`+${fmt(diff)} CC начислено!`, 'in');
+            // Подгрузим свежую активити чтобы юзер видел "за что"
+            window.activity = await fetchActivity();
+            renderActivity();
+          }
+        }
+      )
+      .subscribe();
+  });
+}

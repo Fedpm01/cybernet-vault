@@ -7,27 +7,43 @@ function bindCart() {
   $$('[data-drawer-close]').forEach(el => el.addEventListener('click', closeCart));
   $('#checkout-btn').addEventListener('click', checkout);
 
-  // Кнопки внутри drawer (qty, remove)
-  document.body.addEventListener('click', e => {
+  document.body.addEventListener('click', async e => {
     const inc = e.target.closest('[data-cart-inc]');
     const dec = e.target.closest('[data-cart-dec]');
     const rem = e.target.closest('[data-cart-remove]');
+
     if (inc) {
       const it = state.cart.find(i => i._key === inc.dataset.cartInc);
-      if (it) it.qty++;
+      if (!it) return;
+      it.qty++;
       updateCartBadge(); renderCart();
+      try { await addCartItem(it.id, it.size, it.color); }
+      catch (err) { console.error('cart inc failed:', err); toast('Не удалось обновить', 'err'); }
     }
+
     if (dec) {
       const it = state.cart.find(i => i._key === dec.dataset.cartDec);
-      if (it) {
-        it.qty--;
-        if (it.qty <= 0) state.cart = state.cart.filter(i => i._key !== it._key);
+      if (!it) return;
+      it.qty--;
+      if (it.qty <= 0) {
+        state.cart = state.cart.filter(i => i._key !== it._key);
+        updateCartBadge(); renderCart();
+        try { await removeCartItem(it.id, it.size, it.color); }
+        catch (err) { console.error('cart remove failed:', err); }
+      } else {
+        updateCartBadge(); renderCart();
+        try { await setCartItemQty(it.id, it.size, it.color, it.qty); }
+        catch (err) { console.error('cart dec failed:', err); }
       }
-      updateCartBadge(); renderCart();
     }
+
     if (rem) {
-      state.cart = state.cart.filter(i => i._key !== rem.dataset.cartRemove);
+      const it = state.cart.find(i => i._key === rem.dataset.cartRemove);
+      if (!it) return;
+      state.cart = state.cart.filter(i => i._key !== it._key);
       updateCartBadge(); renderCart();
+      try { await removeCartItem(it.id, it.size, it.color); }
+      catch (err) { console.error('cart remove failed:', err); }
     }
   });
 }
@@ -42,13 +58,26 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-function addToCart(product, size, color) {
+async function addToCart(product, size, color) {
+  // 1. Сохраняем в БД
+  try {
+    await addCartItem(product.id, size, color);
+  } catch (err) {
+    console.error('addToCart error:', err);
+    toast('Не удалось добавить в корзину', 'err');
+    return;
+  }
+
+  // 2. Локальный state — для мгновенного отклика UI
   const key = `${product.id}__${size}__${color}`;
   const existing = state.cart.find(i => i._key === key);
   if (existing) existing.qty += 1;
   else state.cart.push({ _key: key, id: product.id, size, color, qty: 1 });
+
   updateCartBadge();
   renderCart();
+  toast(`${product.name} добавлен`, 'in');
+  pulseCartBtn();
 }
 
 function updateCartBadge() {
