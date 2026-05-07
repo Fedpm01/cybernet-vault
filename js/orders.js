@@ -107,31 +107,35 @@ async function openReceipt(orderUuid) {
   $('#receipt-total').textContent = `−${fmt(o.total_cc)} CC`;
 
   // Состав заказа
-  $('#receipt-items').innerHTML = (o.order_items || []).map(item => {
-    const p = productsList.find(x => x.id === item.product_id);
-    if (!p) {
-      return `
-        <div class="receipt__item">
-          <div class="receipt__item-img"></div>
-          <div>
-            <div class="receipt__item-name">${item.product_id}</div>
-            <div class="receipt__item-meta">${item.size} · ${item.color}</div>
-          </div>
-          <div class="receipt__item-qty">×${item.qty}</div>
-        </div>`;
-    }
-    const accent = p.accent || '#818CF8';
+$('#receipt-items').innerHTML = (o.order_items || []).map(item => {
+  const p = productsList.find(x => x.id === item.product_id);
+  if (!p) {
     return `
       <div class="receipt__item">
-        <div class="receipt__item-img">${(productRenderers[p.category] || svgTee)(p.color, accent)}</div>
+        <div class="receipt__item-img"></div>
         <div>
-          <div class="receipt__item-name">${p.name}</div>
-          <div class="receipt__item-meta">${item.size} · ${item.color} · ${fmt(item.price_cc)} CC</div>
+          <div class="receipt__item-name">${item.product_id}</div>
+          <div class="receipt__item-meta">${item.size} · ${item.color}</div>
         </div>
         <div class="receipt__item-qty">×${item.qty}</div>
+      </div>`;
+  }
+  const accent = p.accent || '#818CF8';
+  const imgHtml = p.image_url
+    ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`
+    : (productRenderers[p.category] || svgTee)(p.color, accent);
+
+  return `
+    <div class="receipt__item">
+      <div class="receipt__item-img">${imgHtml}</div>
+      <div>
+        <div class="receipt__item-name">${p.name}</div>
+        <div class="receipt__item-meta">${item.size} · ${item.color} · ${fmt(item.price_cc)} CC</div>
       </div>
-    `;
-  }).join('');
+      <div class="receipt__item-qty">×${item.qty}</div>
+    </div>
+  `;
+}).join('');
 
   // Текст инструкции в зависимости от статуса
   const instr = $('#receipt-instruction');

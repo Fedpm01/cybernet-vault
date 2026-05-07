@@ -8,6 +8,7 @@ let adminState = {
   selectedUser: null,    // для grant CC modal
   editingProduct: null,  // для catalog edit modal
 };
+let peditImageUrl = null;  // текущий URL фото в модалке редактирования
 
 // ---------- Bootstrap (вызывается из main.js при старте) ----------
 async function initAdmin() {
@@ -92,6 +93,8 @@ function bindAdmin() {
   // Product edit modal
   $$('[data-pedit-close]').forEach(el => el.addEventListener('click', closeProductEditModal));
   $('#pedit-submit')?.addEventListener('click', submitProductEdit);
+
+  bindProductImageUpload();
 }
 
 // ============================================
@@ -288,11 +291,15 @@ async function renderAdminCatalog() {
   }
 
   list.innerHTML = products_.map(p => {
-    const renderer = productRenderers[p.category] || svgTee;
+    const accent = p.accent || '#818CF8';
+    const imgHtml = p.image_url
+      ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`
+      : (productRenderers[p.category] || svgTee)(p.color, accent);
+
     return `
       <div class="admin-table__row">
         <div style="width:48px;height:48px;background:var(--bg-2);border-radius:8px;overflow:hidden">
-          ${renderer(p.color, p.accent || '#818CF8')}
+          ${imgHtml}
         </div>
         <div>
           <div style="font-size:14px;font-weight:500">${p.name}</div>
@@ -442,6 +449,7 @@ async function submitGrant() {
 async function openProductEditModal(productId) {
   const isNew = !productId;
   adminState.editingProduct = productId;
+  peditImageUrl = null;   // сброс
 
   $('#pedit-title').textContent = isNew ? 'Новый товар' : 'Редактирование товара';
 
@@ -467,10 +475,99 @@ async function openProductEditModal(productId) {
     $('#pedit-color').value = p.color || '#1A1A22';
     $('#pedit-accent').value = p.accent || '#818CF8';
     $('#pedit-badge').value = p.badge || '';
+    peditImageUrl = p.image_url || null;
   }
+   // ↓ ДОБАВИТЬ: обновить превью фото
+  refreshImagePreview();
 
   $('#product-edit-modal').classList.add('admin-modal--open');
   document.body.style.overflow = 'hidden';
+}
+
+function refreshImagePreview() {
+  const preview = $('#pedit-image-preview');
+  const removeBtn = $('#pedit-image-remove-btn');
+  const uploadBtn = $('#pedit-image-upload-btn');
+  if (!preview) return;
+
+  if (peditImageUrl) {
+    preview.innerHTML = `<img src="${peditImageUrl}" style="width:100%;height:100%;object-fit:cover" />`;
+    removeBtn.style.display = '';
+    uploadBtn.innerHTML = `${icon('plus')} Заменить фото`;
+  } else {
+    preview.innerHTML = `<span style="font-family:var(--font-mono);font-size:12px;color:var(--text-dim)">SVG fallback (без фото)</span>`;
+    removeBtn.style.display = 'none';
+    uploadBtn.innerHTML = `${icon('plus')} Загрузить фото`;
+  }
+}
+
+async function uploadProductImage(file) {
+  if (file.size > 3 * 1024 * 1024) {
+    toast('Файл слишком большой, максимум 3 МБ', 'err');
+    return null;
+  }
+
+  const productId = $('#pedit-id').value.trim();
+  if (!productId) {
+    toast('Сначала укажи ID товара', 'err');
+    return null;
+  }
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `${productId}/main.${ext}`;
+
+  toast('Загружаю...', 'in');
+
+  // Удалим старые форматы, если есть
+  for (const oldExt of ['png', 'jpg', 'jpeg', 'webp']) {
+    if (oldExt !== ext) {
+      await supabaseClient.storage.from('products').remove([`${productId}/main.${oldExt}`]);
+    }
+  }
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from('products')
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (uploadError) {
+    toast('Ошибка загрузки: ' + uploadError.message, 'err');
+    return null;
+  }
+
+  const { data: { publicUrl } } = supabaseClient.storage.from('products').getPublicUrl(path);
+  return `${publicUrl}?t=${Date.now()}`;  // cache-bust
+}
+
+function bindProductImageUpload() {
+  $('#pedit-image-upload-btn')?.addEventListener('click', () => {
+    $('#pedit-image-input').click();
+  });
+
+  $('#pedit-image-input')?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = await uploadProductImage(file);
+    if (url) {
+      peditImageUrl = url;
+      refreshImagePreview();
+      toast('Фото загружено', 'in');
+    }
+    e.target.value = '';   // сброс input чтобы можно было загрузить тот же файл повторно
+  });
+
+  $('#pedit-image-remove-btn')?.addEventListener('click', async () => {
+    if (!confirm('Убрать фото? Товар вернётся к SVG-иллюстрации.')) return;
+    
+    // Если есть продукт и старый URL — удалить файл из storage
+    const productId = $('#pedit-id').value.trim();
+    if (productId && peditImageUrl) {
+      for (const ext of ['png', 'jpg', 'jpeg', 'webp']) {
+        await supabaseClient.storage.from('products').remove([`${productId}/main.${ext}`]);
+      }
+    }
+    peditImageUrl = null;
+    refreshImagePreview();
+  });
 }
 
 function closeProductEditModal() {
@@ -493,7 +590,11 @@ async function submitProductEdit() {
     return;
   }
 
-  const payload = { id, name, category, price, description, color, accent, badge, status: 'active' };
+  const payload = { 
+    id, name, category, price, description, color, accent, badge, 
+    image_url: peditImageUrl,
+    status: 'active' 
+  };
 
   const { error } = adminState.editingProduct
     ? await supabaseClient.from('products').update(payload).eq('id', adminState.editingProduct)

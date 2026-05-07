@@ -89,15 +89,19 @@ function applyFiltersAndSort(list) {
 
 // ---------- Product card ----------
 function productCard(p) {
-  const renderer = productRenderers[p.category] || svgTee;
   const accent = p.accent || '#818CF8';
   const liked = state.liked.has(p.id);
   const badgeCls = p.badge === 'NEW' ? 'pcard__badge--new' : p.badge === 'HOT' ? 'pcard__badge--hot' : '';
   const badgeIcon = p.badge === 'HOT' ? icon('bolt', { size: 11 }) : p.badge === 'NEW' ? icon('sparkle', { size: 11 }) : '';
   const badgeText = p.badge === 'HOT' ? 'ТОП' : p.badge === 'NEW' ? 'NEW' : '';
 
+  // Fallback: фото если есть, иначе SVG-иллюстрация
+  const imgHtml = p.image_url
+    ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy" />`
+    : (productRenderers[p.category] || svgTee)(p.color, accent);
+
   return `<article class="pcard" data-pid="${p.id}">
-    <div class="pcard__img">${renderer(p.color, accent)}</div>
+    <div class="pcard__img">${imgHtml}</div>
     ${p.badge ? `<span class="pcard__badge ${badgeCls}">${badgeIcon} ${badgeText}</span>` : ''}
     <button class="pcard__like ${liked ? 'pcard__like--active' : ''}" data-like="${p.id}" aria-label="В избранное">
       ${icon(liked ? 'heart' : 'heart-line', { size: 16 })}
@@ -187,7 +191,9 @@ function openProduct(id) {
   $('#modal-price').textContent = fmt(p.price);
   $('#modal-desc').textContent = p.description || p.desc || '';
   const accent = p.accent || '#818CF8';
-  $('#modal-img').innerHTML = (productRenderers[p.category] || svgTee)(p.color, accent);
+  $('#modal-img').innerHTML = p.image_url
+    ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" />`
+    : (productRenderers[p.category] || svgTee)(p.color, accent);
 
   $('#size-chips').innerHTML = sizes.map(s =>
     `<button class="opts__chip ${s === modalSize ? 'opts__chip--active' : ''}" data-size="${s}">${s}</button>`

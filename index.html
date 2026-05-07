@@ -826,6 +826,24 @@
         </div>
       </div>
     </div>
+    <div class="field" style="margin-top:14px">
+      <label class="field__label">Фото товара</label>
+      <div id="pedit-image-preview" style="margin-bottom:10px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line);height:160px;display:grid;place-items:center;overflow:hidden;position:relative">
+        <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-dim)">SVG fallback (без фото)</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button type="button" class="btn btn--ghost" id="pedit-image-upload-btn" style="flex:1">
+          <svg class="icon" width="14" height="14"><use href="#i-plus"/></svg>
+          Загрузить фото
+        </button>
+        <button type="button" class="btn btn--outline" id="pedit-image-remove-btn" style="display:none">
+          <svg class="icon" width="14" height="14"><use href="#i-x"/></svg>
+          Убрать
+        </button>
+      </div>
+      <input type="file" id="pedit-image-input" accept="image/png,image/jpeg,image/webp" style="display:none" />
+      <div style="margin-top:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim)">Если фото нет — товар отрисуется SVG-иллюстрацией</div>
+    </div>
     <div class="admin-modal__footer">
       <button class="btn btn--ghost" data-pedit-close>Отмена</button>
       <button class="btn btn--primary" id="pedit-submit">Сохранить</button>
