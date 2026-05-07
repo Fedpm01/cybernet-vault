@@ -171,8 +171,8 @@ function showSuccessOverlay(total, count, orderId) {
       <div class="success-overlay__inner">
         <div class="success-overlay__icon">${icon('check', { size: 36 })}</div>
         <div class="success-overlay__eyebrow">// ORDER CONFIRMED</div>
-        <h2 class="success-overlay__title">Готово, агент.</h2>
-        <p class="success-overlay__desc">${count} ${count === 1 ? 'позиция отправлена' : count < 5 ? 'позиции отправлены' : 'позиций отправлено'} в обработку. Покажи ID Севаре в OPS.</p>
+        <h2 class="success-overlay__title">Готово${window.myProfile?.name ? ', ' + window.myProfile.name.split(' ')[0] : ''}.</h2>
+        <p class="success-overlay__desc">${count} ${count === 1 ? 'позиция отправлена' : count < 5 ? 'позиции отправлены' : 'позиций отправлено'} в обработку. Покажи ID офис-менеджеру.</p>
 
         <div style="margin:20px 0; padding:18px; background:var(--bg-2); border:1px dashed rgba(99,102,241,0.3); border-radius:14px; text-align:center;">
           <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px">Order ID</div>

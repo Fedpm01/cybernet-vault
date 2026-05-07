@@ -136,7 +136,7 @@ async function openReceipt(orderUuid) {
   // Текст инструкции в зависимости от статуса
   const instr = $('#receipt-instruction');
   if (o.status === 'pending') {
-    instr.innerHTML = `Покажи этот ID <strong>${shortId}</strong> Севаре в OPS, чтобы забрать мерч из офиса.`;
+    instr.innerHTML = `Покажи этот ID <strong>${shortId}</strong> офис-менеджеру, чтобы забрать мерч из офиса.`;
     instr.style.display = 'block';
   } else if (o.status === 'fulfilled') {
     instr.innerHTML = `Заказ <strong>выдан</strong> ${o.fulfilled_at ? relativeTime(o.fulfilled_at) : ''}. Носи с гордостью.`;

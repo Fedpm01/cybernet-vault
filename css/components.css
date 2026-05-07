@@ -161,6 +161,24 @@
   position: absolute; left: 16px; top: calc(50% + 12px); transform: translateY(-50%);
   color: var(--text-dim); width: 16px; height: 16px;
 }
+.field__toggle {
+  position: absolute;
+  right: 12px;
+  top: calc(50% + 12px);
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--text-dim);
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.15s var(--ease);
+}
+.field__toggle:hover { color: var(--text); background: var(--bg-2); }
+.field__toggle--active { color: var(--indigo-soft); }
 
 /* ============================================
    Бейдж счётчика на корзине

@@ -3,6 +3,27 @@
 // ============================================================
 
 function bindAuth() {
+  // Toggle password visibility
+  document.body.addEventListener('click', e => {
+    const toggle = e.target.closest('[data-pw-toggle]');
+    if (!toggle) return;
+    const inputId = toggle.dataset.pwToggle;
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const isVisible = input.type === 'text';
+    input.type = isVisible ? 'password' : 'text';
+    toggle.classList.toggle('field__toggle--active', !isVisible);
+  });
+
+  // Restore "Remember me" email
+  const rememberedEmail = localStorage.getItem('cybernet:remembered-email');
+  if (rememberedEmail) {
+    const emailInput = document.getElementById('login-email');
+    const remember = document.querySelector('#form-login input[type="checkbox"]');
+    if (emailInput) emailInput.value = rememberedEmail;
+    if (remember) remember.checked = true;
+  }
+
   $$('.auth__tab').forEach(tab => {
     tab.addEventListener('click', () => {
       $$('.auth__tab').forEach(t => t.classList.remove('auth__tab--active'));
@@ -16,13 +37,20 @@ function bindAuth() {
     e.preventDefault();
     const email = $('#login-email').value;
     const password = $('#login-pw').value;
+    const remember = document.querySelector('#form-login input[type="checkbox"]')?.checked;
 
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) {
-      toast(error.message, 'err');
-      return;
+    if (error) { toast(error.message, 'err'); return; }
+
+    // Запомнить email
+    if (remember) {
+      localStorage.setItem('cybernet:remembered-email', email);
+    } else {
+      localStorage.removeItem('cybernet:remembered-email');
     }
+
     await loadAllData();
+    await initAdmin();
     showApp();
   });
 

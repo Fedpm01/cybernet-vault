@@ -65,6 +65,10 @@ function renderProfileHeader() {
   // Скрываем хедер дашборда "Tier 03 · ARCHITECT" — пока не считаем тиры
   const heroRank = document.querySelector('.hero-rank');
   if (heroRank) heroRank.style.display = 'none';
+  if (typeof applyAvatar === 'function') {
+    applyAvatar(p.avatar_url);
+  }
+
 }
 
 function renderStats() {

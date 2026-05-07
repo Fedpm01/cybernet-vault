@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindShopCards();
   bindOrders();
   bindAdmin(); 
+  bindAvatarUpload();
 
   // Если уже залогинен — сразу грузим данные и показываем app
   const { data: { user } } = await supabaseClient.auth.getUser();
