@@ -490,49 +490,104 @@
   margin: 0 auto;
   position: relative;
 }
-.profile-avatar { position: relative; overflow: visible; }
-.profile-avatar img { display: block; }
+.profile-avatar { 
+  position: relative; 
+  overflow: visible;
+  cursor: default;
+}
+.profile-avatar img { display: block; border-radius: 24px; }
 
-.profile-avatar__upload {
+/* Маленькая "+" кнопка — когда нет фото */
+.avatar-add-btn {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 32px;
-  height: 32px;
+  bottom: -2px;
+  right: -2px;
+  width: 36px;
+  height: 36px;
   background: var(--indigo);
   color: white;
-  border: 2px solid var(--bg-1);
+  border: 3px solid var(--bg-1);
   border-radius: 50%;
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: all 0.2s var(--ease);
-  z-index: 2;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  z-index: 3;
 }
-.profile-avatar__upload:hover {
+.avatar-add-btn:hover {
   background: var(--indigo-bright);
-  transform: scale(1.1);
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
 }
-.profile-avatar__remove {
+.avatar-add-btn:active {
+  transform: scale(0.95);
+}
+
+/* Hover-оверлей с действиями — когда фото есть */
+.avatar-actions {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 28px;
-  height: 28px;
-  background: var(--coral);
+  inset: 0;
+  border-radius: 24px;
+  background: rgba(10, 10, 18, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+  z-index: 2;
+  pointer-events: none;
+}
+.profile-avatar:hover .avatar-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.avatar-actions__btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: white;
-  border: 2px solid var(--bg-1);
-  border-radius: 50%;
+  border-radius: 10px;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.2s var(--ease);
-  z-index: 2;
+  transition: all 0.15s var(--ease);
 }
-.profile-avatar__remove:hover {
-  background: #ff6b85;
-  transform: scale(1.1);
+.avatar-actions__btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
 }
+.avatar-actions__btn--danger:hover {
+  background: var(--coral);
+  border-color: var(--coral);
+}
+
+/* Скрываем оверлей когда фото нет, и наоборот — кнопку "+" когда фото есть */
+.profile-avatar.no-avatar .avatar-actions {
+  display: none;
+}
+.profile-avatar.has-avatar .avatar-add-btn {
+  display: none;
+}
+
+/* На мобильном — оверлей всегда видим (нет hover на тач-устройствах) */
+@media (max-width: 720px) {
+  .profile-avatar.has-avatar .avatar-actions {
+    opacity: 1;
+    pointer-events: auto;
+    background: linear-gradient(180deg, transparent 50%, rgba(10, 10, 18, 0.85));
+    align-items: flex-end;
+    padding-bottom: 10px;
+  }
+}
+
 .profile-avatar::after {
   content: '';
   position: absolute; inset: -3px;

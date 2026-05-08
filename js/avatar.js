@@ -1,15 +1,17 @@
 // ============================================================
-// CYBERNET VAULT // Avatar upload + remove
+// CYBERNET VAULT // Avatar upload + remove (hover-overlay UX)
 // ============================================================
 
 function bindAvatarUpload() {
-  const btn = document.getElementById('avatar-upload-btn');
+  const uploadBtn = document.getElementById('avatar-upload-btn');   // на оверлее (когда фото есть)
+  const addBtn = document.getElementById('avatar-add-btn');         // под аватаром (когда фото нет)
   const removeBtn = document.getElementById('avatar-remove-btn');
   const input = document.getElementById('avatar-file-input');
-  if (!btn || !input) return;
+  if (!input) return;
 
-  // Открыть файл-пикер
-  btn.addEventListener('click', () => input.click());
+  // Обе кнопки "+" открывают пикер
+  uploadBtn?.addEventListener('click', () => input.click());
+  addBtn?.addEventListener('click', () => input.click());
 
   // Загрузка нового файла
   input.addEventListener('change', async (e) => {
@@ -69,43 +71,41 @@ function bindAvatarUpload() {
   });
 
   // Удаление аватара
-  if (removeBtn) {
-    removeBtn.addEventListener('click', async () => {
-      if (!confirm('Удалить аватар? Вернутся инициалы.')) return;
+  removeBtn?.addEventListener('click', async () => {
+    if (!confirm('Удалить аватар? Вернутся инициалы.')) return;
 
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) return;
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return;
 
-      toast('Удаляю...', 'in');
+    toast('Удаляю...', 'in');
 
-      // Удаляем файлы из storage (все возможные форматы)
-      for (const ext of ['png', 'jpg', 'jpeg', 'webp']) {
-        await supabaseClient.storage.from('avatars').remove([`${user.id}/avatar.${ext}`]);
-      }
+    // Удаляем файлы из storage (все возможные форматы)
+    for (const ext of ['png', 'jpg', 'jpeg', 'webp']) {
+      await supabaseClient.storage.from('avatars').remove([`${user.id}/avatar.${ext}`]);
+    }
 
-      // Очищаем avatar_url в профиле
-      const { error } = await supabaseClient
-        .from('profiles')
-        .update({ avatar_url: null })
-        .eq('id', user.id);
+    // Очищаем avatar_url в профиле
+    const { error } = await supabaseClient
+      .from('profiles')
+      .update({ avatar_url: null })
+      .eq('id', user.id);
 
-      if (error) {
-        toast('Ошибка: ' + error.message, 'err');
-        return;
-      }
+    if (error) {
+      toast('Ошибка: ' + error.message, 'err');
+      return;
+    }
 
-      if (window.myProfile) window.myProfile.avatar_url = null;
-      applyAvatar(null);
-      toast('Аватар удалён', 'in');
-    });
-  }
+    if (window.myProfile) window.myProfile.avatar_url = null;
+    applyAvatar(null);
+    toast('Аватар удалён', 'in');
+  });
 }
 
-// Применить аватар к UI (профиль + топбар) + управлять видимостью кнопки удаления
+// Применить аватар к UI — управляет классами has-avatar / no-avatar
 function applyAvatar(url) {
+  const wrap = document.getElementById('profile-avatar-wrap');
   const img = document.getElementById('profile-avatar-img');
   const initials = document.getElementById('profile-avatar-initials');
-  const removeBtn = document.getElementById('avatar-remove-btn');
 
   if (url) {
     if (img) {
@@ -113,17 +113,23 @@ function applyAvatar(url) {
       img.style.display = 'block';
     }
     if (initials) initials.style.display = 'none';
-    if (removeBtn) removeBtn.style.display = '';   // показать кнопку удаления
+    if (wrap) {
+      wrap.classList.add('has-avatar');
+      wrap.classList.remove('no-avatar');
+    }
   } else {
     if (img) {
       img.style.display = 'none';
       img.src = '';
     }
     if (initials) initials.style.display = '';
-    if (removeBtn) removeBtn.style.display = 'none';   // скрыть кнопку удаления
+    if (wrap) {
+      wrap.classList.add('no-avatar');
+      wrap.classList.remove('has-avatar');
+    }
   }
 
-  // Топбар
+  // Топбар-аватар (синхронизируем с тем что в профиле)
   const avatarBtn = document.getElementById('avatar-btn');
   if (avatarBtn) {
     if (url) {
@@ -133,7 +139,6 @@ function applyAvatar(url) {
       avatarBtn.textContent = '';
     } else {
       avatarBtn.style.backgroundImage = '';
-      // Возвращаем инициалы в топбар
       if (window.myProfile && typeof getInitials === 'function') {
         avatarBtn.textContent = getInitials(window.myProfile.name);
       }
