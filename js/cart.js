@@ -233,7 +233,8 @@ function showSuccessOverlay(total, count, orderId) {
             Квитанция
           </button>
           <button class="btn btn--primary" id="success-close" style="flex:1.5">
-            Зашибись · продолжить
+            <span class="success-btn-text-full">Зашибись · продолжить</span>
+            <span class="success-btn-text-short">Продолжить</span>
             ${icon('arrow', { size: 16 })}
           </button>
         </div>
