@@ -827,3 +827,142 @@
   .lb-row { grid-template-columns: 40px 1fr 100px; padding: 12px 16px; gap: 8px; }
   .lb-row [data-hide-mobile] { display: none; }
 }
+
+/* ============================================
+   MOBILE UX FIXES (Cybernet Vault)
+   ============================================ */
+@media (max-width: 720px) {
+
+  /* --- Шапка профиля: вертикальный стек, всё по центру --- */
+  .profile-header {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+    gap: 16px;
+    padding: 24px 20px;
+  }
+  .profile-header > * {
+    justify-self: center;
+  }
+  .profile-header > div:last-child {
+    text-align: center !important;
+  }
+
+  /* --- Имя: переносим целиком, не разбиваем по слогам --- */
+  .profile-name {
+    font-size: 32px !important;
+    line-height: 1.1;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  /* --- Баланс на мобильном поменьше --- */
+  .profile-header .bigbalance__num {
+    font-size: 36px !important;
+  }
+
+  /* --- Аватар на мобильном: всегда видим оверлей и плюсик --- */
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .profile-avatar #profile-avatar-initials {
+    font-size: 38px;
+  }
+
+  /* Когда фото нет — большая синяя кнопка "+" видна всегда */
+  .profile-avatar.no-avatar .avatar-add-btn,
+  .profile-avatar:not(.has-avatar) .avatar-add-btn {
+    display: grid !important;
+    width: 40px;
+    height: 40px;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Когда фото есть — оверлей с кнопками показан всегда снизу */
+  .profile-avatar.has-avatar .avatar-actions {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 18, 0.85)) !important;
+    align-items: flex-end !important;
+    padding-bottom: 8px;
+    padding-top: 0;
+  }
+  .avatar-actions__btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* --- Метаданные профиля (год, команда) — компактнее --- */
+  .profile-meta {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* --- Кнопка "Выйти" на странице профиля — нормальный размер --- */
+  .page-head .btn--ghost {
+    align-self: center;
+  }
+
+  /* --- Топбар: меньше padding, чтобы кнопки не сжимались --- */
+  .topbar {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    gap: 8px;
+  }
+  .balance-pill {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .balance-pill .coin { width: 16px; height: 16px; font-size: 10px; }
+}
+
+/* ============================================
+   SUCCESS OVERLAY — MOBILE FIXES
+   ============================================ */
+@media (max-width: 720px) {
+  .success-overlay__card {
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px;
+  }
+  .success-overlay__inner {
+    padding: 28px 20px !important;
+  }
+  .success-overlay__title {
+    font-size: 32px !important;
+    line-height: 1.05;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
+  .success-overlay__desc {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  /* Кнопки: меньше текст, ужимаем но оставляем рядом */
+  .success-overlay__inner > div:last-child {
+    gap: 8px !important;
+  }
+  .success-overlay__inner > div:last-child .btn {
+    font-size: 13px !important;
+    padding: 12px 10px !important;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .success-overlay__inner > div:last-child .btn .icon {
+    width: 14px;
+    height: 14px;
+  }
+  /* Order ID: чуть меньше шрифт */
+  .success-overlay__inner > div[style*="dashed"] > div:last-child {
+    font-size: 20px !important;
+  }
+  /* Списано / Остаток */
+  .success-overlay__stats {
+    gap: 16px !important;
+  }
+  .success-overlay__stat-value {
+    font-size: 16px !important;
+  }
+}
