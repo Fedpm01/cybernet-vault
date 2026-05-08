@@ -940,19 +940,27 @@
     font-size: 13px;
     line-height: 1.5;
   }
-  /* Кнопки: меньше текст, ужимаем но оставляем рядом */
+  /* Кнопки success-overlay на мобильном: реально маленький текст, без обрезки */
   .success-overlay__inner > div:last-child {
-    gap: 8px !important;
+    gap: 6px !important;
   }
   .success-overlay__inner > div:last-child .btn {
-    font-size: 13px !important;
-    padding: 12px 10px !important;
-    white-space: nowrap;
+    font-size: 11px !important;
+    padding: 10px 6px !important;
+    line-height: 1.2 !important;
+    white-space: normal;          /* разрешаем перенос */
+    text-align: center;
     min-width: 0;
+    flex: 1;
+    letter-spacing: 0;
+    gap: 4px !important;
   }
-  .success-overlay__inner > div:last-child .btn .icon {
-    width: 14px;
-    height: 14px;
+  /* Иконки внутри кнопок ещё меньше */
+  .success-overlay__inner > div:last-child .btn .icon,
+  .success-overlay__inner > div:last-child .btn svg {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0;
   }
   /* Order ID: чуть меньше шрифт */
   .success-overlay__inner > div[style*="dashed"] > div:last-child {
@@ -964,5 +972,24 @@
   }
   .success-overlay__stat-value {
     font-size: 16px !important;
+  }
+}
+
+/* ============================================
+   ОЧЕНЬ УЗКИЕ ЭКРАНЫ (iPhone SE, mini и т.п.)
+   ============================================ */
+@media (max-width: 380px) {
+  .success-overlay__inner > div:last-child .btn {
+    font-size: 10px !important;
+    padding: 9px 4px !important;
+  }
+  .success-overlay__title {
+    font-size: 28px !important;
+  }
+  .profile-name {
+    font-size: 28px !important;
+  }
+  .profile-header .bigbalance__num {
+    font-size: 30px !important;
   }
 }
